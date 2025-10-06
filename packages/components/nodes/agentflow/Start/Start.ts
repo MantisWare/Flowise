@@ -81,6 +81,10 @@ class Start_Agentflow implements INode {
                                 name: 'string'
                             },
                             {
+                                label: 'Textarea',
+                                name: 'textarea'
+                            },
+                            {
                                 label: 'Number',
                                 name: 'number'
                             },

@@ -446,6 +446,12 @@ class LLM_Agentflow implements INode {
                     })
                 }
             }
+
+            // Process all messages to convert stored-file types to proper content types
+            const { updatedMessages, transformedMessages } = await processMessagesWithImages(messages, options)
+            messages.splice(0, messages.length, ...updatedMessages)
+            pastImageMessagesWithFileRef.push(...transformedMessages)
+
             delete nodeData.inputs?.llmMessages
 
             // Configure structured output if specified

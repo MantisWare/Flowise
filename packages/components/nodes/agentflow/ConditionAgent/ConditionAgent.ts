@@ -358,8 +358,13 @@ class ConditionAgent_Agentflow implements INode {
                 })
             }
 
+            // Process all messages to convert stored-file types to proper content types
+            const { updatedMessages, transformedMessages } = await processMessagesWithImages(messages, options)
+            messages.splice(0, messages.length, ...updatedMessages)
+            pastImageMessagesWithFileRef.push(...transformedMessages)
+
             // Initialize response and determine if streaming is possible
-            let response: AIMessageChunk = new AIMessageChunk('')
+            let response = new AIMessageChunk('')
 
             // Start analytics
             if (analyticHandlers && options.parentTraceIds) {
@@ -391,7 +396,7 @@ class ConditionAgent_Agentflow implements INode {
                     throw new Error('LLM response is missing the "output" key or it is not a string.')
                 }
                 calledOutputName = parsedResponse.output
-            } catch (error) {
+            } catch {
                 throw new Error(
                     `Failed to parse a valid scenario from the LLM's response. Please check if the model is capable of following JSON output instructions. Raw LLM Response: "${
                         response.content as string

@@ -73,49 +73,87 @@ export const processMessagesWithImages = async (
     for (let i = 0; i < updatedMessages.length; i++) {
         const message = updatedMessages[i]
 
-        // Skip non-user messages or messages without content
-        if (message.role !== 'user' || !message.content) {
+        // Skip messages without content
+        if (!message.content) {
             continue
+        }
+
+        // Debug: Log message content to see what we're processing
+        if (Array.isArray(message.content)) {
+            console.log(`Processing message ${i} with array content:`, JSON.stringify(message.content, null, 2))
         }
 
         // Handle array content (typically containing file references)
         if (Array.isArray(message.content)) {
-            const imageContents: MessageContentImageUrl[] = []
+            const processedContents: any[] = []
             let hasImageReferences = false
 
             // Process each content item
             for (const item of message.content) {
+                console.log(`Processing content item:`, JSON.stringify(item, null, 2))
                 // Look for stored-file type items
-                if (item.type === 'stored-file' && item.name && item.mime.startsWith('image/')) {
-                    hasImageReferences = true
-                    try {
-                        // Get file contents from storage
-                        const contents = await getFileFromStorage(item.name, options.orgId, options.chatflowid, options.chatId)
+                if (item.type === 'stored-file' && item.name) {
+                    console.log(`Found stored-file item:`, item.name, item.mime)
+                    if (item.mime.startsWith('image/')) {
+                        hasImageReferences = true
+                        try {
+                            // Get file contents from storage
+                            const contents = await getFileFromStorage(item.name, options.orgId, options.chatflowid, options.chatId)
 
-                        // Create base64 data URL
-                        const base64Data = 'data:' + item.mime + ';base64,' + contents.toString('base64')
+                            // Create base64 data URL
+                            const base64Data = 'data:' + item.mime + ';base64,' + contents.toString('base64')
 
-                        // Add to image content array
-                        imageContents.push({
-                            type: 'image_url',
-                            image_url: {
-                                url: base64Data,
-                                detail: item.imageResolution ?? 'low'
+                            // Add to processed content array
+                            processedContents.push({
+                                type: 'image_url',
+                                image_url: {
+                                    url: base64Data,
+                                    detail: item.imageResolution ?? 'low'
+                                }
+                            })
+                        } catch (error) {
+                            console.error(`Failed to load image ${item.name}:`, error)
+                        }
+                    } else {
+                        // For non-image files, convert to text content
+                        try {
+                            const fileLoaderNodeModule = await import('../../nodes/documentloaders/File/File')
+                            // @ts-ignore
+                            const fileLoaderNodeInstance = new fileLoaderNodeModule.nodeClass()
+                            const nodeOptions = {
+                                retrieveAttachmentChatId: true,
+                                chatflowid: options.chatflowid,
+                                chatId: options.chatId,
+                                orgId: options.orgId
                             }
-                        })
-                    } catch (error) {
-                        console.error(`Failed to load image ${item.name}:`, error)
+                            let fileInputFieldFromMimeType = 'txtFile'
+                            fileInputFieldFromMimeType = mapMimeTypeToInputField(item.mime)
+                            const nodeData = {
+                                inputs: {
+                                    [fileInputFieldFromMimeType]: `FILE-STORAGE::${JSON.stringify([item.name])}`
+                                }
+                            }
+                            const documents: string = await fileLoaderNodeInstance.init(nodeData, '', nodeOptions)
+
+                            // Add as text content
+                            processedContents.push({
+                                type: 'text',
+                                text: `<doc name='${item.name}'>${handleEscapeCharacters(documents, true)}</doc>`
+                            })
+                        } catch (error) {
+                            console.error(`Failed to load file ${item.name}:`, error)
+                        }
                     }
                 }
             }
 
-            // Replace the content with the image content array
-            if (imageContents.length > 0) {
+            // Replace the content with the processed content array
+            if (processedContents.length > 0) {
                 // Store the original message before modifying
                 if (hasImageReferences) {
                     transformedMessages.push(JSON.parse(JSON.stringify(messages[i])))
                 }
-                updatedMessages[i].content = imageContents
+                updatedMessages[i].content = processedContents
             }
         }
     }

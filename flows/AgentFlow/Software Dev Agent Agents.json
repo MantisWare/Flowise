@@ -50,7 +50,7 @@
               "startInputType": "formInput"
             },
             "id": "startAgentflow_0-input-formTitle-string",
-            "display": false
+            "display": true
           },
           {
             "label": "Form Description",
@@ -61,7 +61,7 @@
               "startInputType": "formInput"
             },
             "id": "startAgentflow_0-input-formDescription-string",
-            "display": false
+            "display": true
           },
           {
             "label": "Form Input Types",
@@ -80,6 +80,10 @@
                   {
                     "label": "String",
                     "name": "string"
+                  },
+                  {
+                    "label": "Textarea",
+                    "name": "textarea"
                   },
                   {
                     "label": "Number",
@@ -126,7 +130,7 @@
               }
             ],
             "id": "startAgentflow_0-input-formInputTypes-array",
-            "display": false
+            "display": true
           },
           {
             "label": "Ephemeral Memory",
@@ -173,8 +177,8 @@
         ],
         "inputAnchors": [],
         "inputs": {
-          "startInputType": "chatInput",
-          "startEphemeralMemory": false,
+          "startInputType": "formInput",
+          "startEphemeralMemory": true,
           "startState": [
             {
               "key": "next",
@@ -183,9 +187,47 @@
             {
               "key": "instructions",
               "value": ""
+            },
+            {
+              "key": "plan",
+              "value": ""
             }
           ],
-          "startPersistState": ""
+          "startPersistState": false,
+          "formTitle": "Development Task",
+          "formDescription": "This will describe the development task that the software development agent should perform. ",
+          "formInputTypes": [
+            {
+              "type": "string",
+              "label": "Task Name",
+              "name": "name",
+              "addOptions": ""
+            },
+            {
+              "type": "string",
+              "label": "Task description",
+              "name": "description",
+              "addOptions": ""
+            },
+            {
+              "type": "string",
+              "label": "Figma link",
+              "name": "figma",
+              "addOptions": ""
+            },
+            {
+              "type": "string",
+              "label": "Output Path",
+              "name": "path",
+              "addOptions": ""
+            },
+            {
+              "type": "string",
+              "label": "Stack",
+              "name": "stack",
+              "addOptions": ""
+            }
+          ]
         },
         "outputAnchors": [
           {
@@ -197,7 +239,7 @@
         "outputs": {},
         "selected": false
       },
-      "width": 102,
+      "width": 103,
       "height": 65,
       "positionAbsolute": {
         "x": 187.17912836111398,
@@ -486,7 +528,7 @@
           "llmMessages": [
             {
               "role": "system",
-              "content": "<p>You are a Senior Software Developer Supervisor, tasked with managing the conversation between the following workers:</p><ul><li><p>Software Developer</p></li><li><p>Code Reviewer</p></li></ul><p>Given the following user request, respond with the worker to act next.</p><p>Each worker will perform a task and respond with their result and status.</p><p>When finished, respond with FINISH.</p><p>Select strategically to minimize the number of steps taken.</p>"
+              "content": "<p>You are a Senior Software Developer Supervisor, tasked with managing the conversation between the following workers:</p><ul><li><p>Software Architect</p></li><li><p>Software Developer</p></li><li><p>Code Reviewer</p></li></ul><p>Given the following user request, respond with the worker to act next.</p><p>Each worker will perform a task and respond with their result and status.</p><p>When finished, respond with FINISH.</p><p>Select strategically to minimize the number of steps taken.</p>"
             }
           ],
           "llmEnableMemory": true,
@@ -497,7 +539,7 @@
             {
               "key": "next",
               "type": "enum",
-              "enumValues": "DEVELOPER, REVIEWER, FINISH",
+              "enumValues": "ARCHITECT, DEVELOPER, REVIEWER, FINISH",
               "jsonSchema": "",
               "description": "Next worker to action"
             },
@@ -507,6 +549,13 @@
               "enumValues": "",
               "jsonSchema": "",
               "description": "The specific instructions of the sub-task the next worker should accomplish. "
+            },
+            {
+              "key": "plan",
+              "type": "string",
+              "enumValues": "",
+              "jsonSchema": "",
+              "description": "The specific plan describing the sub-tasks the next worker should accomplish. "
             }
           ],
           "llmUpdateState": [
@@ -517,6 +566,10 @@
             {
               "key": "instructions",
               "value": "<p><span class=\"variable\" data-type=\"mention\" data-id=\"output.instructions\" data-label=\"output.instructions\">{{ output.instructions }}</span> </p>"
+            },
+            {
+              "key": "plan",
+              "value": "<p><span class=\"variable\" data-type=\"mention\" data-id=\"output.plan\" data-label=\"output.plan\">{{ output.plan }}</span> </p>"
             }
           ],
           "llmModelConfig": {
@@ -534,9 +587,12 @@
             "basepath": "",
             "proxyUrl": "",
             "baseOptions": "",
-            "allowImageUploads": "",
-            "reasoning": "",
-            "llmModel": "chatOpenAI"
+            "allowImageUploads": true,
+            "reasoning": true,
+            "llmModel": "chatOpenAI",
+            "imageResolution": "high",
+            "reasoningEffort": "medium",
+            "reasoningSummary": "concise"
           }
         },
         "outputAnchors": [
@@ -807,7 +863,7 @@
               "type": "string",
               "value1": "<p><span class=\"variable\" data-type=\"mention\" data-id=\"$flow.state.next\" data-label=\"$flow.state.next\">{{ $flow.state.next }}</span> </p>",
               "operation": "equal",
-              "value2": "<p>PLANNER</p>"
+              "value2": "<p>ARCHITECT</p>"
             },
             {
               "type": "string",
@@ -817,9 +873,15 @@
             },
             {
               "type": "string",
-              "value1": "",
+              "value1": "<p><span class=\"variable\" data-type=\"mention\" data-id=\"$flow.state.next\" data-label=\"$flow.state.next\">{{ $flow.state.next }}</span> </p>",
               "operation": "equal",
               "value2": "<p>REVIEWER</p>"
+            },
+            {
+              "type": "string",
+              "value1": "<p><span class=\"variable\" data-type=\"mention\" data-id=\"$flow.state.next\" data-label=\"$flow.state.next\">{{ $flow.state.next }}</span> </p>",
+              "operation": "equal",
+              "value2": "<p>FINISH</p>"
             }
           ]
         },
@@ -846,6 +908,12 @@
             "id": "conditionAgentflow_0-output-3",
             "label": 3,
             "name": 3,
+            "description": "Condition 3"
+          },
+          {
+            "id": "conditionAgentflow_0-output-4",
+            "label": 4,
+            "name": 4,
             "description": "Else"
           }
         ],
@@ -856,7 +924,7 @@
       },
       "type": "agentFlow",
       "width": 219,
-      "height": 120,
+      "height": 140,
       "selected": false,
       "positionAbsolute": {
         "x": 749.1860079298755,
@@ -868,7 +936,7 @@
       "id": "stickyNoteAgentflow_0",
       "position": {
         "x": 430.43731985955253,
-        "y": 137.2727882908903
+        "y": -108.85556195899701
       },
       "data": {
         "id": "stickyNoteAgentflow_0",
@@ -896,7 +964,7 @@
         ],
         "inputAnchors": [],
         "inputs": {
-          "note": "Decide on who to call next. "
+          "note": "The supervisor will decide who to call based on the current state of the application or component that's being developed. "
         },
         "outputAnchors": [
           {
@@ -909,12 +977,12 @@
         "selected": false
       },
       "type": "stickyNote",
-      "width": 205,
-      "height": 81,
+      "width": 202,
+      "height": 162,
       "selected": false,
       "positionAbsolute": {
         "x": 430.43731985955253,
-        "y": 137.2727882908903
+        "y": -108.85556195899701
       },
       "dragging": false
     },
@@ -1281,7 +1349,8 @@
               "agentSelectedToolConfig": {
                 "mcpServerConfig": "{\n      \"url\": \"https://mcp.context7.com/mcp\"\n    }",
                 "mcpActions": "[\"get-library-docs\",\"resolve-library-id\"]",
-                "agentSelectedTool": "customMCP"
+                "agentSelectedTool": "customMCP",
+                "mcpName": "context7"
               }
             }
           ],
@@ -1293,7 +1362,7 @@
           "agentModelConfig": {
             "cache": "",
             "modelName": "gpt-4.1",
-            "temperature": "0.6",
+            "temperature": "0.7",
             "streaming": true,
             "maxTokens": "",
             "topP": "",
@@ -1306,8 +1375,10 @@
             "proxyUrl": "",
             "baseOptions": "",
             "allowImageUploads": "",
-            "reasoning": "",
-            "agentModel": "chatOpenAI"
+            "reasoning": true,
+            "agentModel": "chatOpenAI",
+            "reasoningEffort": "medium",
+            "reasoningSummary": "concise"
           },
           "agentUserMessage": "<p>Supervisor instructions:</p><p><span class=\"variable\" data-type=\"mention\" data-id=\"$flow.state.instructions\" data-label=\"$flow.state.instructions\">{{ $flow.state.instructions }}</span> </p>",
           "undefined": ""
@@ -1745,7 +1816,18 @@
             }
           ],
           "agentToolsBuiltInOpenAI": "",
-          "agentTools": "",
+          "agentTools": [
+            {
+              "agentSelectedTool": "customMCP",
+              "agentSelectedToolRequiresHumanInput": "",
+              "agentSelectedToolConfig": {
+                "mcpServerConfig": "{\n    \"url\": \"https://mcp.context7.com/mcp\"\n}",
+                "mcpActions": "[\"get-library-docs\",\"resolve-library-id\"]",
+                "agentSelectedTool": "customMCP",
+                "mcpName": "context7"
+              }
+            }
+          ],
           "agentKnowledgeDocumentStores": "",
           "agentKnowledgeVSEmbeddings": "",
           "agentEnableMemory": true,
@@ -1755,7 +1837,7 @@
           "agentUpdateState": "",
           "agentModelConfig": {
             "cache": "",
-            "modelName": "gpt-4o-mini",
+            "modelName": "gpt-4.1-mini",
             "temperature": "0.6",
             "streaming": true,
             "maxTokens": "",
@@ -1788,7 +1870,7 @@
       },
       "type": "agentFlow",
       "width": 174,
-      "height": 71,
+      "height": 99,
       "selected": false,
       "positionAbsolute": {
         "x": 1098.8106372947593,
@@ -1799,7 +1881,7 @@
     {
       "id": "agentAgentflow_2",
       "position": {
-        "x": 1103.046584551118,
+        "x": 1103.6483653585751,
         "y": 394.26959377209084
       },
       "data": {
@@ -2145,19 +2227,34 @@
         "inputAnchors": [],
         "inputs": {
           "agentModel": "chatOpenAI",
-          "agentMessages": [],
+          "agentMessages": [
+            {
+              "role": "system",
+              "content": "<p>Create the necessary directories and files on the file system as instructed by the software development code received from the supervisor. Please confirm to the industry standards and stack standards.</p>\n<p>Ensure that you:</p>\n<ul>\n<li>Create all specified directories in the correct hierarchy.</li>\n<li>Add all files with the exact content provided by the supervisor.</li>\n<li>Follow the naming conventions and structure as outlined in the instructions.</li>\n</ul>\n<h1 id=\"steps\">Steps</h1>\n<ol>\n<li>Review the code and instructions provided by the supervisor.</li>\n<li>Identify the directory structure and file names that need to be created.</li>\n<li>For each directory, check if it exists; if not, create it.</li>\n<li>For each file, create it within the correct directory and populate it with the specified content.</li>\n</ol>\n<h1 id=\"outputformat\">Output Format</h1>\n<p>The output should be a confirmation message detailing:</p>\n<ul>\n<li>The directories created.</li>\n<li>The files added, including their paths and a brief summary of their content.</li>\n</ul>\n<h1 id=\"examples\">Examples</h1>\n<ul>\n<li><p><strong>Input:</strong> Supervisor provided code to create a directory <code>src</code> with a file <code>app.js</code> containing <code>console.log('Hello, World!');</code>\n<strong>Output:</strong> \"Created directory: src. Added file: src/app.js with content: console.log('Hello, World!');\"</p></li>\n<li><p><strong>Input:</strong> Supervisor specifies a nested directory structure <code>lib/utils</code> with files <code>helper.js</code> and <code>validator.js</code>.\n<strong>Output:</strong> \"Created directories: lib, lib/utils. Added files: lib/utils/helper.js and lib/utils/validator.js.\"</p></li>\n<li><p><strong>Input:</strong> Supervisor requests a directory <code>assets</code> with files <code>image.png</code> and <code>style.css</code>.\n<strong>Output:</strong> \"Created directory: assets. Added files: assets/image.png and assets/style.css.\"</p></li>\n</ul>\n<h1 id=\"notes\">Notes</h1>\n<ul>\n<li>Ensure proper permissions are set for the created directories and files.</li>\n<li>Handle any potential errors, such as permission issues or existing files, gracefully.</li>\n</ul>"
+            }
+          ],
           "agentToolsBuiltInOpenAI": "",
-          "agentTools": "",
+          "agentTools": [
+            {
+              "agentSelectedTool": "desktopCommanderMCP",
+              "agentSelectedToolRequiresHumanInput": true,
+              "agentSelectedToolConfig": {
+                "credential": "",
+                "mcpActions": "[\"create_directory\",\"edit_block\",\"force_terminate\",\"get_config\",\"get_file_info\",\"get_more_search_results\",\"get_prompts\",\"get_recent_tool_calls\",\"get_usage_stats\",\"give_feedback_to_desktop_commander\",\"interact_with_process\",\"kill_process\",\"list_directory\",\"list_processes\",\"list_searches\",\"list_sessions\",\"move_file\",\"read_file\",\"read_multiple_files\",\"read_process_output\",\"set_config_value\",\"start_process\",\"start_search\",\"stop_search\",\"write_file\"]",
+                "agentSelectedTool": "desktopCommanderMCP"
+              }
+            }
+          ],
           "agentKnowledgeDocumentStores": "",
           "agentKnowledgeVSEmbeddings": "",
           "agentEnableMemory": true,
           "agentMemoryType": "allMessages",
-          "agentUserMessage": "<p>Given the above conversations, generate a detailed solution developed by the software developer and code reviewer. Include full code, improvements, and reviews. </p>",
+          "agentUserMessage": "<p>Given the above conversations, generate a detailed solution developed by the architect, software developer and code reviewer. Include full code, improvements, and reviews.<br><br>The files should be created in the following path: <span class=\"variable\" data-type=\"mention\" data-id=\"$form.path\" data-label=\"$form.path\">{{ $form.path }}</span> </p><p>If the development task is building a component, please use the appropriate component name: <span class=\"variable\" data-type=\"mention\" data-id=\"$form.name\" data-label=\"$form.name\">{{ $form.name }}</span> </p><p>And make sure to place all of the files, whether it be TypeScript, SAS, CSS, JavaScript, whatever the component needs, as well as a nice README descriptions and how to use the component, in this folder. </p>",
           "agentReturnResponseAs": "userMessage",
           "agentUpdateState": "",
           "agentModelConfig": {
             "cache": "",
-            "modelName": "gpt-4o-mini",
+            "modelName": "gpt-4.1-nano",
             "temperature": "0.6",
             "streaming": true,
             "maxTokens": "",
@@ -2171,9 +2268,7 @@
             "proxyUrl": "",
             "baseOptions": "",
             "allowImageUploads": "",
-            "reasoning": true,
-            "reasoningEffort": "medium",
-            "reasoningSummary": "concise",
+            "reasoning": false,
             "agentModel": "chatOpenAI"
           },
           "undefined": ""
@@ -2189,11 +2284,11 @@
         "selected": false
       },
       "type": "agentFlow",
-      "width": 174,
-      "height": 71,
+      "width": 179,
+      "height": 99,
       "selected": false,
       "positionAbsolute": {
-        "x": 1103.046584551118,
+        "x": 1103.6483653585751,
         "y": 394.26959377209084
       },
       "dragging": false
@@ -2201,8 +2296,8 @@
     {
       "id": "agentAgentflow_3",
       "position": {
-        "x": 1093.630063654416,
-        "y": -63.42083012375751
+        "x": 1096.6848860232362,
+        "y": -64.18453571596254
       },
       "data": {
         "id": "agentAgentflow_3",
@@ -2550,7 +2645,7 @@
           "agentMessages": [
             {
               "role": "system",
-              "content": "<p>You are a <strong>Senior Software Engineer</strong> with full-stack expertise in both frontend web development and backend systems. Your primary role is to design, implement, and integrate software components with a strong emphasis on clean architecture, scalability, and maintainability. Use all your tools available to you to make sure we are using the up-to-date syntax and implementations. </p><p></p><ul><li><p><strong>Mindset &amp; Role</strong>: Act as a seasoned engineer who takes ownership, thinks critically, and applies best practices across the full software lifecycle.</p></li><li><p><strong>Core Capabilities</strong>:</p><p></p><ul><li><p>Frontend (React, TypeScript, modern UI frameworks, accessibility)</p></li><li><p>Backend (Node.js, Python, APIs, databases, authentication, integrations)</p></li><li><p>DevOps &amp; Deployment (Docker, CI/CD pipelines, cloud environments)</p></li></ul><p></p></li><li><p><strong>Development Approach</strong>: Write modular, reusable code, prioritize performance and security, document decisions, and ensure code readability.</p></li><li><p><strong>Collaboration</strong>: Communicate solutions clearly, justify technical trade-offs, and align with the project’s goals.</p></li><li><p><strong>Obedience to Supervisor</strong>: You must carefully follow any and all instructions provided by your supervisor, adapting your solutions to their directives, even if multiple iterations or adjustments are required.</p></li></ul><p></p><p></p><p>Your output should always reflect the professionalism and quality expected of a senior engineer, while staying practical and implementable.</p>"
+              "content": "<p># 🧠 AI Prompt — Senior Software Architect Role</p><p>You are a <strong>Senior Software Architect</strong> responsible for designing end-to-end software systems that are robust, scalable, secure, and aligned with modern best practices. Your role is to <strong>define and guide the overall system architecture</strong>, ensuring technical cohesion across all components while maintaining high standards of quality, performance, and maintainability.</p><p>---</p><p>## 🎯 Mindset &amp; Role</p><p>Act as a strategic technical leader who:</p><p>- Balances innovation with pragmatism.</p><p>- Anticipates long-term implications of design decisions.</p><p>- Ensures all systems are built for scalability, observability, and maintainability.</p><p>- Translates business and product requirements into coherent technical blueprints.</p><p>- Provides mentorship and guidance to engineers and other contributors.</p><p>You should think in <strong>systems</strong>, not just components. Always consider:</p><p>- Separation of concerns</p><p>- Loose coupling and high cohesion</p><p>- Domain-driven design (DDD) principles</p><p>- Clear API boundaries and communication flows</p><p>- Cloud-native and containerized deployment patterns</p><p>---</p><p>## 🧩 Core Architectural Responsibilities</p><p>- <strong>System Design:</strong> Define architecture diagrams, component interactions, and communication protocols (REST, GraphQL, gRPC, WebSockets, etc.).</p><p>- <strong>Scalability &amp; Performance:</strong> Identify and eliminate bottlenecks, recommend caching, load balancing, and horizontal scaling strategies.</p><p>- <strong>Security &amp; Compliance:</strong> Enforce secure authentication (OAuth2, JWT, SSO), encryption, data integrity, and API hardening practices.</p><p>- <strong>Integration Strategy:</strong> Design interfaces for 3rd-party APIs, internal microservices, or event-driven pipelines.</p><p>- <strong>Data Architecture:</strong> Define schema models, storage strategies (SQL/NoSQL), and ensure data normalization and efficient querying.</p><p>- <strong>DevOps Alignment:</strong> Incorporate CI/CD pipelines, container orchestration (Docker/Kubernetes), and infrastructure-as-code principles.</p><p>- <strong>Documentation:</strong> Produce architectural decision records (ADR) and rationale for trade-offs.</p><p>---</p><p>## 🧠 Technical Stack Awareness</p><p>Your architectural guidance should be grounded in modern technology practices:</p><p>- <strong>Frontend:</strong> React, Next.js, TypeScript, modern UI frameworks (Material UI, AntD, Tailwind), accessibility (WCAG).</p><p>- <strong>Backend:</strong> Node.js, Python (FastAPI), Go, or other scalable backends with RESTful or event-driven patterns.</p><p>- <strong>Databases:</strong> PostgreSQL, MongoDB, Redis, or cloud-native storage (e.g., Firestore, DynamoDB).</p><p>- <strong>Infrastructure:</strong> Docker, Kubernetes, Terraform, AWS/Azure/GCP, Cloudflare.</p><p>- <strong>Messaging &amp; Events:</strong> Kafka, RabbitMQ, Pub/Sub, or WebSocket-based architectures.</p><p>---</p><p>## 🧭 Collaboration &amp; Execution</p><p>- Communicate clearly with engineers, designers, and stakeholders.</p><p>- Provide structured feedback on system components, ensuring technical consistency.</p><p>- Justify all major design decisions with pros, cons, and reasoning.</p><p>- Work iteratively — start from a high-level architecture and refine to implementation detail as directed.</p><p>---</p><p>## ⚙️ Obedience to Supervisor</p><p>You must follow all instructions, requirements, or constraints provided by your <strong>Supervisor</strong>.</p><p>Adapt your designs or recommendations accordingly, even through multiple iterations.</p><p>The supervisor’s directives always take precedence over your preferences or conventions.</p><p>---</p><p>## 🧾 Deliverables</p><p>For each request, include the following (as applicable):</p><p>1. <strong>System Overview:</strong> A summary of the architecture and rationale.</p><p>2. <strong>Component Diagram:</strong> Visual or textual outline of core modules and their relationships.</p><p>3. <strong>Tech Stack Recommendations:</strong> Technologies and libraries to be used.</p><p>4. <strong>Data Flow &amp; API Contracts:</strong> Input/output structures, endpoints, and event flows.</p><p>5. <strong>Security, Scaling &amp; Deployment Notes:</strong> Any relevant considerations.</p><p>6. <strong>Implementation Notes:</strong> Key patterns or constraints to guide the engineering team.</p><p>---</p><p>## 🧩 Project Definition</p><p>Provide all the context below when issuing a task to the AI:</p><p>Component: <span class=\"variable\" data-type=\"mention\" data-id=\"$form.name\" data-label=\"$form.name\">{{ $form.name }}</span> </p><p>Description: <span class=\"variable\" data-type=\"mention\" data-id=\"question\" data-label=\"question\">{{ question }}</span>  <span class=\"variable\" data-type=\"mention\" data-id=\"$form.description\" data-label=\"$form.description\">{{ $form.description }}</span> </p><p>Figma: <span class=\"variable\" data-type=\"mention\" data-id=\"$form.figma\" data-label=\"$form.figma\">{{ $form.figma }}</span> </p><p>Image: <span class=\"variable\" data-type=\"mention\" data-id=\"file_attachment\" data-label=\"file_attachment\">{{ file_attachment }}</span> </p><p>Tech Stack: <span class=\"variable\" data-type=\"mention\" data-id=\"$form.stack\" data-label=\"$form.stack\">{{ $form.stack }}</span> </p>"
             }
           ],
           "agentToolsBuiltInOpenAI": "",
@@ -2561,19 +2656,37 @@
               "agentSelectedToolConfig": {
                 "mcpServerConfig": "{\n      \"url\": \"https://mcp.context7.com/mcp\"\n    }",
                 "mcpActions": "[\"get-library-docs\",\"resolve-library-id\"]",
-                "agentSelectedTool": "customMCP"
+                "agentSelectedTool": "customMCP",
+                "mcpName": "context7"
+              }
+            },
+            {
+              "agentSelectedTool": "figmaMCP",
+              "agentSelectedToolRequiresHumanInput": "",
+              "agentSelectedToolConfig": {
+                "credential": "",
+                "serviceUrl": "http://127.0.0.1:3845/mcp",
+                "transportType": "http",
+                "mcpActions": "[\"add_code_connect_map\",\"create_design_system_rules\",\"get_code_connect_map\",\"get_metadata\",\"get_screenshot\",\"get_variable_defs\",\"get_code\"]",
+                "agentSelectedTool": "figmaMCP"
               }
             }
           ],
-          "agentKnowledgeDocumentStores": "",
-          "agentKnowledgeVSEmbeddings": "",
+          "agentKnowledgeDocumentStores": [
+            {
+              "documentStore": "dea4b535-afb4-4152-99d4-59742b0c0b8d:Software Development Context ",
+              "docStoreDescription": "This document defines the exact file organization patterns and directory structure rules for the application. These rules ensure consistent code organization and can be used by AI systems to reconstruct or maintain the project structure.",
+              "returnSourceDocuments": ""
+            }
+          ],
+          "agentKnowledgeVSEmbeddings": [],
           "agentEnableMemory": true,
           "agentReturnResponseAs": "userMessage",
           "agentUpdateState": [],
           "agentModelConfig": {
             "cache": "",
-            "modelName": "gpt-4.1",
-            "temperature": "0.6",
+            "modelName": "gpt-4.1-mini",
+            "temperature": "0.7",
             "streaming": true,
             "maxTokens": "",
             "topP": "",
@@ -2585,9 +2698,12 @@
             "basepath": "",
             "proxyUrl": "",
             "baseOptions": "",
-            "allowImageUploads": "",
-            "reasoning": "",
-            "agentModel": "chatOpenAI"
+            "allowImageUploads": true,
+            "reasoning": true,
+            "agentModel": "chatOpenAI",
+            "imageResolution": "high",
+            "reasoningEffort": "medium",
+            "reasoningSummary": "concise"
           },
           "agentUserMessage": "<p>Supervisor instructions:</p><p><span class=\"variable\" data-type=\"mention\" data-id=\"$flow.state.instructions\" data-label=\"$flow.state.instructions\">{{ $flow.state.instructions }}</span> </p>",
           "undefined": ""
@@ -2603,12 +2719,66 @@
         "selected": false
       },
       "type": "agentFlow",
-      "width": 170,
+      "width": 174,
       "height": 99,
       "selected": false,
       "positionAbsolute": {
-        "x": 1093.630063654416,
-        "y": -63.42083012375751
+        "x": 1096.6848860232362,
+        "y": -64.18453571596254
+      },
+      "dragging": false
+    },
+    {
+      "id": "stickyNoteAgentflow_1",
+      "position": {
+        "x": 1442.4775756403799,
+        "y": -86.58967208309033
+      },
+      "data": {
+        "id": "stickyNoteAgentflow_1",
+        "label": "Sticky Note (1)",
+        "version": 1,
+        "name": "stickyNoteAgentflow",
+        "type": "StickyNote",
+        "color": "#fee440",
+        "baseClasses": [
+          "StickyNote"
+        ],
+        "category": "Agent Flows",
+        "description": "Add notes to the agent flow",
+        "inputParams": [
+          {
+            "label": "",
+            "name": "note",
+            "type": "string",
+            "rows": 1,
+            "placeholder": "Type something here",
+            "optional": true,
+            "id": "stickyNoteAgentflow_1-input-note-string",
+            "display": true
+          }
+        ],
+        "inputAnchors": [],
+        "inputs": {
+          "note": "This loop pack is to assist each one of the agents that is part of the building process to revert back to the supervisor for next steps. "
+        },
+        "outputAnchors": [
+          {
+            "id": "stickyNoteAgentflow_1-output-stickyNoteAgentflow",
+            "label": "Sticky Note",
+            "name": "stickyNoteAgentflow"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "type": "stickyNote",
+      "width": 202,
+      "height": 182,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1442.4775756403799,
+        "y": -86.58967208309033
       },
       "dragging": false
     }

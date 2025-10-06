@@ -935,7 +935,7 @@ const NodeInputHandler = ({
                                     <IconWand />
                                 </IconButton>
                             )}
-                            {((inputParam.type === 'string' && inputParam.rows) || inputParam.type === 'code') && (
+                            {((inputParam.type === 'string' && inputParam.rows) || inputParam.type === 'textarea' || inputParam.type === 'code') && (
                                 <IconButton
                                     size='small'
                                     sx={{
@@ -1077,7 +1077,7 @@ const NodeInputHandler = ({
                             </>
                         )}
 
-                        {(inputParam.type === 'string' || inputParam.type === 'password' || inputParam.type === 'number') &&
+                        {(inputParam.type === 'string' || inputParam.type === 'textarea' || inputParam.type === 'password' || inputParam.type === 'number') &&
                             (inputParam?.acceptVariable &&
                             (window.location.href.includes('v2/agentcanvas') || window.location.href.includes('v2/marketplace')) ? (
                                 <RichInput

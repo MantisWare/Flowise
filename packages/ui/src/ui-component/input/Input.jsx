@@ -28,6 +28,8 @@ export const Input = ({ inputParam, value, nodes, edges, nodeId, onChange, disab
         switch (type) {
             case 'string':
                 return 'text'
+            case 'textarea':
+                return 'text'
             case 'password':
                 return 'password'
             case 'number':
@@ -98,8 +100,8 @@ export const Input = ({ inputParam, value, nodes, edges, nodeId, onChange, disab
                         disabled={disabled}
                         type={getInputType(inputParam.type)}
                         placeholder={inputParam.placeholder}
-                        multiline={!!inputParam.rows}
-                        rows={inputParam.rows ?? 1}
+                        multiline={inputParam.type === 'textarea' || !!inputParam.rows}
+                        rows={inputParam.type === 'textarea' ? 4 : (inputParam.rows ?? 1)}
                         value={myValue}
                         name={inputParam.name}
                         onChange={(e) => {
@@ -109,7 +111,11 @@ export const Input = ({ inputParam, value, nodes, edges, nodeId, onChange, disab
                         inputProps={{
                             step: inputParam.step ?? 1,
                             style: {
-                                height: inputParam.rows ? '90px' : 'inherit'
+                                height: (() => {
+                                    if (inputParam.type === 'textarea') return '120px'
+                                    if (inputParam.rows) return '90px'
+                                    return 'inherit'
+                                })()
                             }
                         }}
                         sx={{
