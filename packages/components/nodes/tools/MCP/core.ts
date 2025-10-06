@@ -63,7 +63,7 @@ export class MCPToolkit extends BaseToolkit {
                     transport = new StreamableHTTPClientTransport(baseUrl)
                 }
                 await client.connect(transport)
-            } catch (error) {
+            } catch {
                 if (this.serverParams.headers) {
                     transport = new SSEClientTransport(baseUrl, {
                         requestInit: {

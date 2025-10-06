@@ -1764,6 +1764,65 @@ const ChatMessage = ({ open, chatflowid, isAgentCanvas, isDialog, previews, setP
                                 ))}
                         </Box>
 
+                        {/* Upload buttons for form input agents */}
+                        {(isChatFlowAvailableForImageUploads || isChatFlowAvailableForFileUploads) && (
+                            <Box sx={{ mb: 3, display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap' }}>
+                                {isChatFlowAvailableForImageUploads && (
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={<IconPhotoPlus />}
+                                        onClick={handleImageUploadClick}
+                                        disabled={loading}
+                                        sx={{ borderRadius: 2, minWidth: 140 }}
+                                    >
+                                        Upload Image
+                                    </Button>
+                                )}
+                                {isChatFlowAvailableForFileUploads && (
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={<IconPaperclip />}
+                                        onClick={handleFileUploadClick}
+                                        disabled={loading}
+                                        sx={{ borderRadius: 2, minWidth: 140 }}
+                                    >
+                                        Upload File
+                                    </Button>
+                                )}
+                            </Box>
+                        )}
+
+                        {/* File previews for form uploads */}
+                        {previews && previews.length > 0 && (
+                            <Box sx={{ width: '100%', mb: 2, display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+                                {previews.map((item, index) => (
+                                    <Fragment key={index}>{previewDisplay(item)}</Fragment>
+                                ))}
+                            </Box>
+                        )}
+
+                        {/* Hidden file inputs for form uploads */}
+                        {isChatFlowAvailableForImageUploads && (
+                            <input
+                                style={{ display: 'none' }}
+                                multiple
+                                ref={imgUploadRef}
+                                type='file'
+                                onChange={handleFileChange}
+                                accept={imageUploadAllowedTypes || '*'}
+                            />
+                        )}
+                        {isChatFlowAvailableForFileUploads && (
+                            <input
+                                style={{ display: 'none' }}
+                                multiple
+                                ref={fileUploadRef}
+                                type='file'
+                                onChange={handleFileChange}
+                                accept={getFileUploadAllowedTypes()}
+                            />
+                        )}
+
                         <Button
                             variant='contained'
                             fullWidth
