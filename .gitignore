@@ -104,3 +104,9 @@
 ## S/MIME message
 *.smime
 *.vsix
+
+## Redis
+data/
+
+## API Keys
+API_KEYS.md

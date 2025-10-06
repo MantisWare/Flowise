@@ -64,6 +64,14 @@ class Custom_MCP implements INode {
         this.documentation = 'https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search'
         this.inputs = [
             {
+                label: 'MCP Name',
+                name: 'mcpName',
+                type: 'string',
+                placeholder: 'My Custom MCP',
+                optional: true,
+                description: 'Optional name for this custom MCP. If not provided, will use "Custom MCP"'
+            },
+            {
                 label: 'MCP Server Config',
                 name: 'mcpServerConfig',
                 type: 'code',
@@ -94,13 +102,19 @@ class Custom_MCP implements INode {
         listActions: async (nodeData: INodeData, options: ICommonObject): Promise<INodeOptionsValue[]> => {
             try {
                 const toolset = await this.getTools(nodeData, options)
+                const mcpName = nodeData.inputs?.mcpName as string
                 toolset.sort((a: any, b: any) => a.name.localeCompare(b.name))
 
-                return toolset.map(({ name, ...rest }) => ({
-                    label: name.toUpperCase(),
-                    name: name,
-                    description: rest.description || name
-                }))
+                return toolset.map(({ name, ...rest }) => {
+                    const displayName = mcpName?.trim() ? `${mcpName.trim()}_${name}` : name
+                    const label = mcpName?.trim() ? `[${mcpName.trim()}] ${name.toUpperCase()}` : name.toUpperCase()
+
+                    return {
+                        label: label,
+                        name: displayName,
+                        description: rest.description || name
+                    }
+                })
             } catch (error) {
                 return [
                     {
@@ -115,6 +129,7 @@ class Custom_MCP implements INode {
 
     async init(nodeData: INodeData, _: string, options: ICommonObject): Promise<any> {
         const tools = await this.getTools(nodeData, options)
+        const mcpName = nodeData.inputs?.mcpName as string
 
         const _mcpActions = nodeData.inputs?.mcpActions
         let mcpActions = []
@@ -126,7 +141,18 @@ class Custom_MCP implements INode {
             }
         }
 
-        return tools.filter((tool: any) => mcpActions.includes(tool.name))
+        const filteredTools = tools.filter((tool: any) => mcpActions.includes(tool.name))
+
+        // Update tool names and descriptions to include the custom MCP name
+        if (mcpName?.trim()) {
+            return filteredTools.map((tool: any) => ({
+                ...tool,
+                name: `${mcpName.trim()}_${tool.name}`,
+                description: `[${mcpName.trim()}] ${tool.description || tool.name}`
+            }))
+        }
+
+        return filteredTools
     }
 
     async getTools(nodeData: INodeData, options: ICommonObject): Promise<Tool[]> {
