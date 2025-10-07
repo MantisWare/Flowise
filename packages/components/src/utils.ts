@@ -756,8 +756,7 @@ export const mapChatMessageToBaseMessage = async (chatmessages: any[] = [], orgI
                                 chatId: message.chatId,
                                 orgId
                             }
-                            let fileInputFieldFromMimeType = 'txtFile'
-                            fileInputFieldFromMimeType = mapMimeTypeToInputField(upload.mime)
+                            const fileInputFieldFromMimeType = mapMimeTypeToInputField(upload.mime)
                             const nodeData = {
                                 inputs: {
                                     [fileInputFieldFromMimeType]: `FILE-STORAGE::${JSON.stringify([upload.name])}`
@@ -779,7 +778,7 @@ export const mapChatMessageToBaseMessage = async (chatmessages: any[] = [], orgI
                             ]
                         })
                     )
-                } catch (e) {
+                } catch {
                     // failed to parse fileUploads, continue with text only
                     chatHistory.push(new HumanMessage(message.content || ''))
                 }
