@@ -35,6 +35,7 @@ import { Organization } from './enterprise/database/entities/organization.entity
 import { GeneralRole, Role } from './enterprise/database/entities/role.entity'
 import { migrateApiKeysFromJsonToDb } from './utils/apiKey'
 import { ExpressAdapter } from '@bull-board/express'
+import { configureAbortSignalListeners } from './utils/abortSignalUtils'
 
 declare global {
     namespace Express {
@@ -96,6 +97,10 @@ export class App {
             this.nodesPool = new NodesPool()
             await this.nodesPool.initialize()
             logger.info('🔧 [server]: Nodes pool initialized successfully')
+
+            // Configure abort signal listeners to prevent MaxListenersExceededWarning
+            configureAbortSignalListeners()
+            logger.info('🔧 [server]: Abort signal listeners configured successfully')
 
             // Initialize abort controllers pool
             this.abortControllerPool = new AbortControllerPool()

@@ -11,7 +11,7 @@ export const addImagesToMessages = async (
 
     if (llmSupportsVision(model) && multiModalOption) {
         // Image Uploaded
-        if (multiModalOption.image && multiModalOption.image.allowImageUploads && options?.uploads && options?.uploads.length > 0) {
+        if (multiModalOption.image?.allowImageUploads && options?.uploads && options?.uploads.length > 0) {
             const imageUploads = getImageUploads(options.uploads)
             for (const upload of imageUploads) {
                 let bf = upload.data

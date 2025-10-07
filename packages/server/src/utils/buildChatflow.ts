@@ -288,7 +288,7 @@ export const executeFlow = async ({
                 const bf = Buffer.from(splitDataURI.pop() || '', 'base64')
                 const mime = splitDataURI[0].split(':')[1].split(';')[0]
                 const { totalSize } = await addSingleFileToStorage(mime, bf, filename, orgId, chatflowid, chatId)
-                await updateStorageUsage(orgId, workspaceId, totalSize, usageCacheManager)
+                updateStorageUsage(orgId, workspaceId, totalSize, usageCacheManager)
                 upload.type = 'stored-file'
                 // Omit upload.data since we don't store the content in database
                 fileUploads[i] = omit(upload, ['data'])
@@ -1002,8 +1002,7 @@ export const utilBuildChatflow = async (req: Request, isInternal: boolean = fals
             return result
         } else {
             // Add abort controller to the pool
-            const signal = new AbortController()
-            appServer.abortControllerPool.add(abortControllerId, signal)
+            const signal = appServer.abortControllerPool.create(abortControllerId)
             executeData.signal = signal
 
             const result = await executeFlow(executeData)

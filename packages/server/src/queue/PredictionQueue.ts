@@ -95,8 +95,7 @@ export class PredictionQueue extends BaseQueue {
 
         if (this.abortControllerPool) {
             const abortControllerId = `${data.chatflow.id}_${data.chatId}`
-            const signal = new AbortController()
-            this.abortControllerPool.add(abortControllerId, signal)
+            const signal = this.abortControllerPool.create(abortControllerId)
             data.signal = signal
         }
 

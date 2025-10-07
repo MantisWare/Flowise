@@ -80,7 +80,7 @@ export const processMessagesWithImages = async (
 
         // Debug: Log message content to see what we're processing
         if (Array.isArray(message.content)) {
-            console.log(`Processing message ${i} with array content:`, JSON.stringify(message.content, null, 2))
+            console.log(`Processing message ${i} with array content:`, JSON.stringify(message.content, null, 2).slice(0, 100))
         }
 
         // Handle array content (typically containing file references)
@@ -126,8 +126,7 @@ export const processMessagesWithImages = async (
                                 chatId: options.chatId,
                                 orgId: options.orgId
                             }
-                            let fileInputFieldFromMimeType = 'txtFile'
-                            fileInputFieldFromMimeType = mapMimeTypeToInputField(item.mime)
+                            const fileInputFieldFromMimeType = mapMimeTypeToInputField(item.mime)
                             const nodeData = {
                                 inputs: {
                                     [fileInputFieldFromMimeType]: `FILE-STORAGE::${JSON.stringify([item.name])}`

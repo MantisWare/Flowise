@@ -1,3 +1,5 @@
+import { createAbortController, safeAbort } from './utils/abortSignalUtils'
+
 /**
  * This pool is to keep track of abort controllers mapped to chatflowid_chatid
  */
@@ -11,6 +13,17 @@ export class AbortControllerPool {
      */
     add(id: string, abortController: AbortController) {
         this.abortControllers[id] = abortController
+    }
+
+    /**
+     * Create and add a new abort controller to the pool
+     * @param {string} id
+     * @returns {AbortController} The created abort controller
+     */
+    create(id: string): AbortController {
+        const abortController = createAbortController()
+        this.add(id, abortController)
+        return abortController
     }
 
     /**
@@ -36,10 +49,6 @@ export class AbortControllerPool {
      * @param {string} id
      */
     abort(id: string) {
-        const abortController = this.abortControllers[id]
-        if (abortController) {
-            abortController.abort()
-            this.remove(id)
-        }
+        safeAbort(this, id)
     }
 }
