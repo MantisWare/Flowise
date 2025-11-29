@@ -31,7 +31,8 @@
         "lint-fix": "pnpm lint --fix",
         "quick": "pretty-quick --staged",
         "postinstall": "husky install",
-        "migration:create": "pnpm typeorm migration:create"
+        "migration:create": "pnpm typeorm migration:create",
+        "install:with-libomp": "LDFLAGS='-L/usr/local/opt/libomp/lib' CPPFLAGS='-I/usr/local/opt/libomp/include' PKG_CONFIG_PATH='/usr/local/opt/libomp/lib/pkgconfig:$PKG_CONFIG_PATH' pnpm install"
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx,json,md}": "eslint --fix"
