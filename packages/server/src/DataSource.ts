@@ -14,9 +14,13 @@ let appDataSource: DataSource
 
 export const init = async (): Promise<void> => {
     let homePath
-    let flowisePath = path.join(getUserHome(), '.flowise')
+    const vibeforgePath = path.join(getUserHome(), '.vibeforge')
+    const flowisePath = path.join(vibeforgePath, '.flowise')
+    if (!fs.existsSync(vibeforgePath)) {
+        fs.mkdirSync(vibeforgePath, { recursive: true })
+    }
     if (!fs.existsSync(flowisePath)) {
-        fs.mkdirSync(flowisePath)
+        fs.mkdirSync(flowisePath, { recursive: true })
     }
     switch (process.env.DATABASE_TYPE) {
         case 'sqlite':

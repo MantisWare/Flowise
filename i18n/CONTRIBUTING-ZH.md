@@ -128,7 +128,7 @@ Flowise 支持不同的环境变量来配置您的实例。您可以在 `package
 | `TOOL_FUNCTION_BUILTIN_DEP` | 用于工具函数的 NodeJS 内置模块                          | 字符串                                          |                                     |
 | `TOOL_FUNCTION_EXTERNAL_DEP`| 用于工具函数的外部模块                                  | 字符串                                          |                                     |
 | `DATABASE_TYPE`             | 存储 Flowise 数据的数据库类型                           | 枚举字符串: `sqlite`, `mysql`, `postgres`       | `sqlite`                            |
-| `DATABASE_PATH`             | 数据库保存的位置（当 `DATABASE_TYPE` 是 sqlite 时）     | 字符串                                          | `your-home-dir/.flowise`            |
+| `DATABASE_PATH`             | 数据库保存的位置（当 `DATABASE_TYPE` 是 sqlite 时）     | 字符串                                          | `your-home-dir/.vibeforge/.flowise`            |
 | `DATABASE_HOST`             | 主机 URL 或 IP 地址（当 `DATABASE_TYPE` 不是 sqlite 时）| 字符串                                          |                                     |
 | `DATABASE_PORT`             | 数据库端口（当 `DATABASE_TYPE` 不是 sqlite 时）         | 字符串                                          |                                     |
 | `DATABASE_USERNAME`         | 数据库用户名（当 `DATABASE_TYPE` 不是 sqlite 时）       | 字符串                                          |                                     |
@@ -138,7 +138,7 @@ Flowise 支持不同的环境变量来配置您的实例。您可以在 `package
 | `FLOWISE_SECRETKEY_OVERWRITE`| 加密密钥用于替代存储在 `SECRETKEY_PATH` 中的密钥        | 字符串                                          |                                     |
 | `MODEL_LIST_CONFIG_JSON`    | 加载模型的位置                                          | 字符串                                          | `/your_model_list_config_file_path` |
 | `STORAGE_TYPE`              | 上传文件的存储类型                                      | 枚举字符串: `local`, `s3`                       | `local`                             |
-| `BLOB_STORAGE_PATH`         | 本地上传文件存储路径（当 `STORAGE_TYPE` 为 `local`）    | 字符串                                          | `your-home-dir/.flowise/storage`    |
+| `BLOB_STORAGE_PATH`         | 本地上传文件存储路径（当 `STORAGE_TYPE` 为 `local`）    | 字符串                                          | `your-home-dir/.vibeforge/.flowise/storage`    |
 | `S3_STORAGE_BUCKET_NAME`    | S3 存储文件夹路径（当 `STORAGE_TYPE` 为 `s3`）          | 字符串                                          |                                     |
 | `S3_STORAGE_ACCESS_KEY_ID`  | AWS 访问密钥 (Access Key)                               | 字符串                                          |                                     |
 | `S3_STORAGE_SECRET_ACCESS_KEY` | AWS 密钥 (Secret Key)                                | 字符串                                          |                                     |

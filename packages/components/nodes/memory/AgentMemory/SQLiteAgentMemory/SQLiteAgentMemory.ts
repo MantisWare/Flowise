@@ -64,7 +64,8 @@ class SQLiteAgentMemory_Memory implements INode {
 
         const threadId = options.sessionId || options.chatId
 
-        const database = path.join(process.env.DATABASE_PATH ?? path.join(getUserHome(), '.flowise'), 'database.sqlite')
+        const defaultFlowisePath = path.join(getUserHome(), '.vibeforge', '.flowise')
+        const database = path.join(process.env.DATABASE_PATH ?? defaultFlowisePath, 'database.sqlite')
 
         let datasourceOptions: ICommonObject = {
             database,

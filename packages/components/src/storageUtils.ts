@@ -533,7 +533,7 @@ function getFilePaths(dir: string): FileInfo[] {
 export const getStoragePath = (): string => {
     const storagePath = process.env.BLOB_STORAGE_PATH
         ? path.join(process.env.BLOB_STORAGE_PATH)
-        : path.join(getUserHome(), '.flowise', 'storage')
+        : path.join(getUserHome(), '.vibeforge', '.flowise', 'storage')
     if (!fs.existsSync(storagePath)) {
         fs.mkdirSync(storagePath, { recursive: true })
     }

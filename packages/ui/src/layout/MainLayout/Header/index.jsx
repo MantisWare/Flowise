@@ -8,7 +8,6 @@ import { Button, Avatar, Box, ButtonBase, Switch, Typography, Link } from '@mui/
 import { useTheme, styled, darken } from '@mui/material/styles'
 
 // project imports
-import LogoSection from '../LogoSection'
 import ProfileSection from './ProfileSection'
 import WorkspaceSwitcher from '@/layout/MainLayout/Header/WorkspaceSwitcher'
 import OrgWorkspaceBreadcrumbs from '@/layout/MainLayout/Header/OrgWorkspaceBreadcrumbs'
@@ -221,41 +220,28 @@ const Header = ({ handleLeftDrawerToggle }) => {
 
     return (
         <>
-            <Box
-                sx={{
-                    width: 228,
-                    display: 'flex',
-                    [theme.breakpoints.down('md')]: {
-                        width: 'auto'
-                    }
-                }}
-            >
-                <Box component='span' sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
-                    <LogoSection />
-                </Box>
-                {isAuthenticated && (
-                    <ButtonBase sx={{ borderRadius: '12px', overflow: 'hidden' }}>
-                        <Avatar
-                            variant='rounded'
-                            sx={{
-                                ...theme.typography.commonAvatar,
-                                ...theme.typography.mediumAvatar,
-                                transition: 'all .2s ease-in-out',
-                                background: theme.palette.secondary.light,
-                                color: theme.palette.secondary.dark,
-                                '&:hover': {
-                                    background: theme.palette.secondary.dark,
-                                    color: theme.palette.secondary.light
-                                }
-                            }}
-                            onClick={handleLeftDrawerToggle}
-                            color='inherit'
-                        >
-                            <IconMenu2 stroke={1.5} size='1.3rem' />
-                        </Avatar>
-                    </ButtonBase>
-                )}
-            </Box>
+            {isAuthenticated && (
+                <ButtonBase sx={{ borderRadius: '12px', overflow: 'hidden' }}>
+                    <Avatar
+                        variant='rounded'
+                        sx={{
+                            ...theme.typography.commonAvatar,
+                            ...theme.typography.mediumAvatar,
+                            transition: 'all .2s ease-in-out',
+                            background: theme.palette.secondary.light,
+                            color: theme.palette.secondary.dark,
+                            '&:hover': {
+                                background: theme.palette.secondary.dark,
+                                color: theme.palette.secondary.light
+                            }
+                        }}
+                        onClick={handleLeftDrawerToggle}
+                        color='inherit'
+                    >
+                        <IconMenu2 stroke={1.5} size='1.3rem' />
+                    </Avatar>
+                </ButtonBase>
+            )}
             {isCloud || isOpenSource ? (
                 <Box
                     sx={{

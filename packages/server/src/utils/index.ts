@@ -1583,7 +1583,12 @@ export const getEncryptionKey = async (): Promise<string> => {
         const encryptKey = generateEncryptKey()
         const defaultLocation = process.env.SECRETKEY_PATH
             ? path.join(process.env.SECRETKEY_PATH, 'encryption.key')
-            : path.join(getUserHome(), '.flowise', 'encryption.key')
+            : path.join(getUserHome(), '.vibeforge', '.flowise', 'encryption.key')
+        // Ensure directory exists before writing
+        const defaultDir = path.dirname(defaultLocation)
+        if (!fs.existsSync(defaultDir)) {
+            fs.mkdirSync(defaultDir, { recursive: true })
+        }
         await fs.promises.writeFile(defaultLocation, encryptKey)
         return encryptKey
     }
@@ -1915,7 +1920,7 @@ export const getAPIOverrideConfig = (chatflow: IChatFlow) => {
 export const getUploadPath = (): string => {
     return process.env.BLOB_STORAGE_PATH
         ? path.join(process.env.BLOB_STORAGE_PATH, 'uploads')
-        : path.join(getUserHome(), '.flowise', 'uploads')
+        : path.join(getUserHome(), '.vibeforge', '.flowise', 'uploads')
 }
 
 export function generateId() {
