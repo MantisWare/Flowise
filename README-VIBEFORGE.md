@@ -72,6 +72,9 @@ When `VIBEFORGE_EMBEDDED=true` is set during build, the Flowise UI:
 - Hides Flowise branding (logo, upgrade buttons, marketplace)
 - Removes workspace/organization features
 - Automatically authenticates with a mock user
+- Defaults to dark mode theme
+- Removes theme toggle (controlled by parent VibeForge application)
+- Prevents external browser redirects
 
 #### Specific UI Modifications
 
@@ -84,12 +87,26 @@ The following files have been modified to support embedded mode with `VIBEFORGE_
   - Returns `true` for all permission checks in embedded mode
 - `packages/ui/src/store/reducers/authSlice.js` (lines 5-37)
   - Creates mock authenticated user with global admin permissions (`permissions: ['*']`)
+- `packages/ui/src/store/context/ErrorContext.jsx` (lines 15-52)
+  - Bypasses 401/403 error redirects to login pages in embedded mode
+  - Prevents global error handler from forcing login navigation
 
 **Branding Removal:**
 - `packages/ui/src/layout/MainLayout/LogoSection/index.jsx` (lines 13-16)
   - Returns `null` to hide Flowise logo
 - `packages/ui/src/layout/MainLayout/Header/index.jsx` (lines 160-161, 274-276)
   - Hides WorkspaceSwitcher, OrgWorkspaceBreadcrumbs, and Upgrade button
+  - Hides theme toggle switch (theme controlled by parent)
+
+**Theme Management:**
+- `packages/ui/src/store/reducers/customizationReducer.js`
+  - Forces dark mode default when `VIBEFORGE_EMBEDDED=true`
+  - Allows theme changes from parent via `SET_DARKMODE` action
+- `packages/ui/src/App.jsx`
+  - Listens for `VIBEFORGE_THEME_CHANGE` messages from parent window
+  - Updates Flowise UI theme when VibeForge theme changes
+- `packages/ui/src/views/auth/login.jsx` and `signIn.jsx`
+  - Prevents external redirects when `VIBEFORGE_EMBEDDED=true`
 
 **Advanced Features Hidden:**
 - `packages/ui/src/menu-items/dashboard.js` (lines 99-112, 140-153, 213-274, 275-314)
@@ -122,11 +139,15 @@ The Flowise backend server:
 - Has health monitoring every 5 seconds
 - Supports port auto-increment for multiple instances
 - Features automatic restart with exponential backoff on crashes
+- Serves both the API backend and UI from the same port (port 3000)
+- UI is built with embedded mode enabled (`VIBEFORGE_EMBEDDED=true`)
 
 ### Key Files
 
 - `electron/flowise-manager.ts` - Manages the Flowise server lifecycle using native child_process
-- `electron/main.ts` - Integrates FlowiseManager with retry logic and health monitoring
+- `electron/main.ts` - Integrates FlowiseManager with retry logic and health monitoring, blocks external browser windows
+- `src/components/AgentBuilderView.tsx` - Embeds Flowise UI in iframe, injects console log capture, sends theme changes
+- `src/components/FlowiseDebugPanel.tsx` - Integrated debug console panel displaying logs from both server and UI
 - `packages/flowise/packages/ui/*` - Modified for embedded mode
 - `scripts/postinstall.js` - Automated build script
 
@@ -194,9 +215,9 @@ pnpm run flowise:build
 ### Issue: Port conflicts (multiple VibeForge instances)
 
 **This is handled automatically!** The FlowiseManager will auto-increment ports:
-- First instance: Port 3000
-- Second instance: Port 3001
-- Third instance: Port 3002
+- First instance: Port 3000 (serves both API and UI)
+- Second instance: Port 3001 (serves both API and UI)
+- Third instance: Port 3002 (serves both API and UI)
 - etc.
 
 ### Issue: Process crashes repeatedly
@@ -213,12 +234,17 @@ Check the debug window (in dev mode) or console logs to see crash reasons.
 
 ### Building for Embedded Mode
 
-Always use the `VIBEFORGE_EMBEDDED=true` environment variable when building the UI:
+Always use the `VIBEFORGE_EMBEDDED=true` environment variable when building the UI. The build scripts in the root `package.json` ensure this is set automatically:
 
 ```bash
-cd packages/flowise/packages/ui
-VIBEFORGE_EMBEDDED=true pnpm build
+# Build UI with embedded mode (automatic)
+pnpm run flowise:build-ui
+
+# Build both server and UI (automatic)
+pnpm run flowise:build
 ```
+
+**Note:** The Flowise UI is served from the same port as the Flowise server (port 3000). There is no separate UI dev server.
 
 ### Testing Changes
 
@@ -331,13 +357,24 @@ Start VibeForge in dev mode and verify:
 - ✅ Flowise logo is hidden
 - ✅ Sidebar shows only: Chatflows, Agentflows, Executions, Assistants, Tools, Credentials, Variables, Document Stores
 - ✅ Hidden sections: Marketplace, API Keys, User & Workspace Management, Logs, Account Settings
+- ✅ Theme defaults to dark mode and syncs with VibeForge theme toggle
+- ✅ Theme toggle switch is hidden in Flowise UI header
+- ✅ External browser windows and redirects are blocked
+- ✅ Console logs from Flowise UI appear in debug console panel
 - ✅ Agents sync to VibeForge Planning Board
 
 ## Support
 
 If you encounter persistent issues:
 
-1. Check the Flowise debug window (opens automatically in dev mode)
+1. Check the integrated debug console panel (toggle via "Server Console" button in status bar)
 2. Check the main VibeForge console for error logs
 3. Try a complete rebuild: `pnpm run flowise:rebuild`
 4. If all else fails, try a fresh clone and setup: `pnpm run setup`
+
+**Debug Console Panel:**
+- Toggle via "Server Console" button in the status bar (bottom-right corner)
+- Displays logs from both Flowise server (native process) and Flowise UI (iframe)
+- Logs are color-coded by level (info, warn, error, debug) and source (Server/UI)
+- Auto-scrolls to latest logs
+- Resizable up to 80% of viewport height

@@ -3,26 +3,15 @@ import {
     IconList,
     IconUsersGroup,
     IconHierarchy,
-    IconBuildingStore,
-    IconKey,
     IconTool,
     IconLock,
     IconRobot,
-    IconSettings,
     IconVariable,
     IconFiles,
     IconTestPipe,
     IconMicroscope,
     IconDatabase,
     IconChartHistogram,
-    IconUserEdit,
-    IconFileUpload,
-    IconClipboardList,
-    IconStack2,
-    IconUsers,
-    IconLockCheck,
-    IconFileDatabase,
-    IconShieldLock,
     IconListCheck
 } from '@tabler/icons-react'
 
@@ -30,34 +19,21 @@ import {
 const icons = {
     IconHierarchy,
     IconUsersGroup,
-    IconBuildingStore,
     IconList,
-    IconKey,
     IconTool,
     IconLock,
     IconRobot,
-    IconSettings,
     IconVariable,
     IconFiles,
     IconTestPipe,
     IconMicroscope,
     IconDatabase,
-    IconUserEdit,
     IconChartHistogram,
-    IconFileUpload,
-    IconClipboardList,
-    IconStack2,
-    IconUsers,
-    IconLockCheck,
-    IconFileDatabase,
-    IconShieldLock,
     IconListCheck
 }
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
-
-// VibeForge Embedded Mode
-const isEmbedded = process.env.VIBEFORGE_EMBEDDED === 'true'
+// VibeForge Embedded: Simplified menu for embedded mode
 
 const primaryChildren = [
     {
@@ -96,20 +72,6 @@ const primaryChildren = [
         breadcrumbs: true,
         permission: 'assistants:view'
     },
-    // Hide Marketplaces in embedded mode
-    ...(!isEmbedded
-        ? [
-              {
-                  id: 'marketplaces',
-                  title: 'Marketplaces',
-                  type: 'item',
-                  url: '/marketplaces',
-                  icon: icons.IconBuildingStore,
-                  breadcrumbs: true,
-                  permission: 'templates:marketplace,templates:custom'
-              }
-          ]
-        : []),
     {
         id: 'tools',
         title: 'Tools',
@@ -137,20 +99,6 @@ const primaryChildren = [
         breadcrumbs: true,
         permission: 'variables:view'
     },
-    // Hide API Keys in embedded mode
-    ...(!isEmbedded
-        ? [
-              {
-                  id: 'apikey',
-                  title: 'API Keys',
-                  type: 'item',
-                  url: '/apikey',
-                  icon: icons.IconKey,
-                  breadcrumbs: true,
-                  permission: 'apikeys:view'
-              }
-          ]
-        : []),
     {
         id: 'document-stores',
         title: 'Document Stores',
@@ -209,109 +157,7 @@ const dashboard = {
                     permission: 'evaluations:view'
                 }
             ]
-        },
-        // Hide User & Workspace Management section in embedded mode
-        ...(!isEmbedded
-            ? [
-                  {
-                      id: 'management',
-                      title: 'User & Workspace Management',
-                      type: 'group',
-                      children: [
-                          {
-                              id: 'sso',
-                              title: 'SSO Config',
-                              type: 'item',
-                              url: '/sso-config',
-                              icon: icons.IconShieldLock,
-                              breadcrumbs: true,
-                              display: 'feat:sso-config',
-                              permission: 'sso:manage'
-                          },
-                          {
-                              id: 'roles',
-                              title: 'Roles',
-                              type: 'item',
-                              url: '/roles',
-                              icon: icons.IconLockCheck,
-                              breadcrumbs: true,
-                              display: 'feat:roles',
-                              permission: 'roles:manage'
-                          },
-                          {
-                              id: 'users',
-                              title: 'Users',
-                              type: 'item',
-                              url: '/users',
-                              icon: icons.IconUsers,
-                              breadcrumbs: true,
-                              display: 'feat:users',
-                              permission: 'users:manage'
-                          },
-                          {
-                              id: 'workspaces',
-                              title: 'Workspaces',
-                              type: 'item',
-                              url: '/workspaces',
-                              icon: icons.IconStack2,
-                              breadcrumbs: true,
-                              display: 'feat:workspaces',
-                              permission: 'workspace:view'
-                          },
-                          {
-                              id: 'login-activity',
-                              title: 'Login Activity',
-                              type: 'item',
-                              url: '/login-activity',
-                              icon: icons.IconClipboardList,
-                              breadcrumbs: true,
-                              display: 'feat:login-activity',
-                              permission: 'loginActivity:view'
-                          }
-                      ]
-                  }
-              ]
-            : []),
-        // Hide "Others" section entirely in embedded mode (Logs, Account Settings)
-        ...(!isEmbedded
-            ? [
-                  {
-                      id: 'others',
-                      title: 'Others',
-                      type: 'group',
-                      children: [
-                          {
-                              id: 'logs',
-                              title: 'Logs',
-                              type: 'item',
-                              url: '/logs',
-                              icon: icons.IconList,
-                              breadcrumbs: true,
-                              display: 'feat:logs',
-                              permission: 'logs:view'
-                          },
-                          // {
-                          //     id: 'files',
-                          //     title: 'Files',
-                          //     type: 'item',
-                          //     url: '/files',
-                          //     icon: icons.IconFileDatabase,
-                          //     breadcrumbs: true,
-                          //     display: 'feat:files',
-                          // },
-                          {
-                              id: 'account',
-                              title: 'Account Settings',
-                              type: 'item',
-                              url: '/account',
-                              icon: icons.IconSettings,
-                              breadcrumbs: true,
-                              display: 'feat:account'
-                          }
-                      ]
-                  }
-              ]
-            : [])
+        }
     ]
 }
 

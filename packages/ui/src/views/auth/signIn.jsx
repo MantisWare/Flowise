@@ -130,17 +130,13 @@ const SignInPage = () => {
 
     useEffect(() => {
         if (ssoLoginApi.error) {
+            // VibeForge Embedded: Block all SSO redirects
             if (ssoLoginApi.error?.response?.status === 401 && ssoLoginApi.error?.response?.data.redirectUrl) {
-                // VibeForge Embedded Mode: Prevent external redirects
-                if (process.env.VIBEFORGE_EMBEDDED === 'true') {
-                    console.log('VibeForge Embedded Mode: Blocked SSO redirect to', ssoLoginApi.error.response.data.redirectUrl)
-                    setAuthError('SSO authentication is not available in embedded mode')
-                    return
-                }
-                window.location.href = ssoLoginApi.error.response.data.redirectUrl
-            } else {
-                setAuthError(ssoLoginApi.error.message)
+                console.log('VibeForge Embedded: Blocked SSO redirect to', ssoLoginApi.error.response.data.redirectUrl)
+                setAuthError('SSO authentication is not available in embedded mode')
+                return
             }
+            setAuthError(ssoLoginApi.error.message)
         }
     }, [ssoLoginApi.error])
 

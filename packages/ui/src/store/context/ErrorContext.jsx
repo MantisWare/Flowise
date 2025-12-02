@@ -14,29 +14,19 @@ export const ErrorProvider = ({ children }) => {
 
     const handleError = async (err) => {
         console.error(err)
-        if (err?.response?.status === 403) {
-            navigate('/unauthorized')
-        } else if (err?.response?.status === 401) {
-            if (ErrorMessage.INVALID_MISSING_TOKEN === err?.response?.data?.message) {
-                store.dispatch(logoutSuccess())
-                navigate('/login')
-            } else {
-                const isRedirect = err?.response?.data?.redirectTo && err?.response?.data?.error
 
-                if (isRedirect) {
-                    redirectWhenUnauthorized({
-                        error: err.response.data.error,
-                        redirectTo: err.response.data.redirectTo
-                    })
-                } else {
-                    const currentPath = window.location.pathname
-                    if (currentPath !== '/signin' && currentPath !== '/login') {
-                        store.dispatch(logoutSuccess())
-                        navigate('/login')
-                    }
-                }
-            }
-        } else setError(err)
+        // VibeForge Embedded: Skip all authentication error redirects
+        if (err?.response?.status === 403) {
+            // Ignore 403 errors in embedded mode
+            console.log('VibeForge Embedded: Ignoring 403 forbidden error')
+            return
+        } else if (err?.response?.status === 401) {
+            // Ignore 401 errors in embedded mode
+            console.log('VibeForge Embedded: Ignoring 401 authentication error')
+            return
+        } else {
+            setError(err)
+        }
     }
 
     return (

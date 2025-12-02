@@ -11,6 +11,9 @@
     ],
     "scripts": {
         "build": "turbo run build",
+        "build:server": "pnpm --filter ./packages/server build",
+        "build:ui": "VIBEFORGE_EMBEDDED=true pnpm --filter ./packages/ui build",
+        "build:all": "pnpm build:server && pnpm build:ui",
         "build:embedded": "VIBEFORGE_EMBEDDED=true pnpm build",
         "build-force": "pnpm clean && turbo run build --force",
         "dev": "turbo run dev --parallel --no-cache",
@@ -87,7 +90,8 @@
             "unset-value": "2.0.1",
             "webpack-dev-middleware": "7.4.2",
             "ws": "8.18.3",
-            "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+            "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+            "@types/express-serve-static-core": "4.17.43"
         }
     },
     "engines": {

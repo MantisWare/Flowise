@@ -1,8 +1,7 @@
 // authSlice.js
 import { createSlice } from '@reduxjs/toolkit'
-import AuthUtils from '@/utils/authUtils'
 
-// VibeForge Embedded Mode: Create mock authenticated user
+// VibeForge Embedded: Always use mock authenticated user
 const createEmbeddedUser = () => ({
     id: 'vibeforge-embedded-user',
     username: 'VibeForge User',
@@ -12,29 +11,15 @@ const createEmbeddedUser = () => ({
     activeWorkspaceId: 'default'
 })
 
-const initialState = process.env.VIBEFORGE_EMBEDDED === 'true'
-    ? {
-          user: createEmbeddedUser(),
-          isAuthenticated: true,
-          isGlobal: true,
-          token: 'vibeforge-embedded-token',
-          permissions: ['*'],
-          features: {}
-      }
-    : {
-          user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
-          isAuthenticated: 'true' === localStorage.getItem('isAuthenticated'),
-          isGlobal: 'true' === localStorage.getItem('isGlobal'),
-          token: null,
-          permissions:
-              localStorage.getItem('permissions') && localStorage.getItem('permissions') !== 'undefined'
-                  ? JSON.parse(localStorage.getItem('permissions'))
-                  : null,
-          features:
-              localStorage.getItem('features') && localStorage.getItem('features') !== 'undefined'
-                  ? JSON.parse(localStorage.getItem('features'))
-                  : null
-      }
+// VibeForge Embedded: Always authenticated with global admin permissions
+const initialState = {
+    user: createEmbeddedUser(),
+    isAuthenticated: true,
+    isGlobal: true,
+    token: 'vibeforge-embedded-token',
+    permissions: ['*'],
+    features: {}
+}
 
 const authSlice = createSlice({
     name: 'auth',

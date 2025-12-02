@@ -31,6 +31,7 @@ overrides:
   webpack-dev-middleware: 7.4.2
   ws: 8.18.3
   xlsx: https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz
+  '@types/express-serve-static-core': 4.17.43
 
 importers:
 
@@ -318,7 +319,7 @@ importers:
         version: 4.3.2(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       axios:
         specifier: 1.12.0
-        version: 1.12.0(debug@4.4.0)
+        version: 1.12.0(debug@4.3.4)
       cheerio:
         specifier: ^1.0.0-rc.12
         version: 1.0.0-rc.12
@@ -655,7 +656,7 @@ importers:
         version: 0.4.1
       axios:
         specifier: 1.12.0
-        version: 1.12.0(debug@4.4.0)
+        version: 1.12.0(debug@4.3.4)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -849,6 +850,12 @@ importers:
       '@types/crypto-js':
         specifier: ^4.1.1
         version: 4.2.2
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      '@types/express-serve-static-core':
+        specifier: 4.17.43
+        version: 4.17.43
       '@types/express-session':
         specifier: ^1.18.0
         version: 1.18.0
@@ -1013,7 +1020,7 @@ importers:
         version: 4.21.24(@babel/runtime@7.26.10)(@codemirror/autocomplete@6.14.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.3)(@lezer/common@1.2.1))(@codemirror/language@6.10.1)(@codemirror/lint@6.5.0)(@codemirror/search@6.5.6)(@codemirror/state@6.4.1)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.26.3)(codemirror@6.0.1(@lezer/common@1.2.1))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       axios:
         specifier: 1.12.0
-        version: 1.12.0(debug@4.4.0)
+        version: 1.12.0(debug@4.3.4)
       clsx:
         specifier: ^1.1.1
         version: 1.2.1
@@ -7501,9 +7508,6 @@ packages:
 
   '@types/express-serve-static-core@4.17.43':
     resolution: {integrity: sha512-oaYtiBirUOPQGSWNGPWnzyAFJ0BP3cwvN4oWZQY+zUBwpVIGsKUkpBpSztp74drYcjavs7SKFZ4DX1V2QeN8rg==}
-
-  '@types/express-serve-static-core@5.0.6':
-    resolution: {integrity: sha512-3xhRnjJPkULekpSzgtoNYYcTWgEZkp4myc+Saevii5JPnHNvHMRlBSHDbs7Bh1iPPoVTERHEZXyhyLbMEsExsA==}
 
   '@types/express-session@1.18.0':
     resolution: {integrity: sha512-27JdDRgor6PoYlURY+Y5kCakqp5ulC0kmf7y+QwaY+hv9jEFuQOThgkjyA53RP3jmKuBsH5GR6qEfFmvb8mwOA==}
@@ -23528,7 +23532,7 @@ snapshots:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 22.5.4
+      '@types/node': 22.16.3
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.8.1
@@ -23811,7 +23815,7 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 22.5.4
+      '@types/node': 22.16.3
       '@types/yargs': 16.0.9
       chalk: 4.1.2
 
@@ -24333,7 +24337,7 @@ snapshots:
     dependencies:
       '@langchain/community': 0.3.49(aca7fe1482d36285281b5a91abdff950)
       '@langchain/core': 0.3.61(openai@4.96.0(encoding@0.1.13)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))(zod@3.22.4))
-      axios: 1.12.0(debug@4.4.0)
+      axios: 1.12.0(debug@4.3.4)
       mem0ai: 2.1.16(@anthropic-ai/sdk@0.37.0(encoding@0.1.13))(@google/genai@0.7.0(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@6.0.4))(@mistralai/mistralai@0.1.3(encoding@0.1.13))(@qdrant/js-client-rest@1.9.0(typescript@5.5.2))(@supabase/supabase-js@2.39.8(bufferutil@4.0.8)(utf-8-validate@6.0.4))(@types/jest@29.5.14)(@types/pg@8.11.2)(@types/sqlite3@3.1.11)(encoding@0.1.13)(groq-sdk@0.5.0(encoding@0.1.13))(neo4j-driver@5.27.0)(ollama@0.5.11)(pg@8.11.3)(redis@4.6.13)(sqlite3@5.1.7)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       uuid: 9.0.1
       zod: 3.22.4
@@ -24489,7 +24493,7 @@ snapshots:
 
   '@mendable/firecrawl-js@1.25.1':
     dependencies:
-      axios: 1.12.0(debug@4.4.0)
+      axios: 1.12.0(debug@4.3.4)
       typescript-event-target: 1.1.1
       zod: 3.24.2
       zod-to-json-schema: 3.24.1(zod@3.24.2)
@@ -27840,13 +27844,6 @@ snapshots:
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
 
-  '@types/express-serve-static-core@5.0.6':
-    dependencies:
-      '@types/node': 22.16.3
-      '@types/qs': 6.9.17
-      '@types/range-parser': 1.2.7
-      '@types/send': 0.17.4
-
   '@types/express-session@1.18.0':
     dependencies:
       '@types/express': 4.17.21
@@ -27855,13 +27852,13 @@ snapshots:
     dependencies:
       '@types/body-parser': 1.19.5
       '@types/express-serve-static-core': 4.17.43
-      '@types/qs': 6.9.12
+      '@types/qs': 6.9.17
       '@types/serve-static': 1.15.5
 
   '@types/express@5.0.1':
     dependencies:
       '@types/body-parser': 1.19.5
-      '@types/express-serve-static-core': 5.0.6
+      '@types/express-serve-static-core': 4.17.43
       '@types/serve-static': 1.15.5
 
   '@types/geojson@7946.0.14': {}
@@ -28892,7 +28889,7 @@ snapshots:
       '@crawlee/types': 3.8.1
       agentkeepalive: 4.5.0
       async-retry: 1.3.3
-      axios: 1.12.0(debug@4.4.0)
+      axios: 1.12.0(debug@4.3.4)
       content-type: 1.0.5
       ow: 0.28.2
       tslib: 2.6.2
@@ -32311,7 +32308,7 @@ snapshots:
       '@babel/core': 7.24.0
       '@microsoft/fetch-event-source': 2.0.1
       '@ts-stack/markdown': 1.5.0
-      axios: 1.12.0(debug@4.4.0)
+      axios: 1.12.0(debug@4.3.4)
       cors: 2.8.5
       cross-env: 7.0.3
       device-detector-js: 3.0.3
@@ -34907,7 +34904,7 @@ snapshots:
       '@langchain/groq': 0.1.2(@langchain/core@0.3.61(openai@4.96.0(encoding@0.1.13)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))(zod@3.22.4)))(encoding@0.1.13)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@langchain/mistralai': 0.2.0(@langchain/core@0.3.61(openai@4.96.0(encoding@0.1.13)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))(zod@3.22.4)))
       '@langchain/ollama': 0.2.0(@langchain/core@0.3.61(openai@4.96.0(encoding@0.1.13)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))(zod@3.22.4)))
-      axios: 1.12.0(debug@4.4.0)
+      axios: 1.12.0(debug@4.3.4)
       cheerio: 1.0.0-rc.12
       handlebars: 4.7.8
       typeorm: 0.3.20(ioredis@5.3.2)(mongodb@6.3.0(socks@2.8.1))(mysql2@3.11.4)(pg@8.11.3)(redis@4.6.13)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.4.6)(@types/node@22.16.3)(typescript@5.5.2))
@@ -35631,7 +35628,7 @@ snapshots:
       '@types/jest': 29.5.14
       '@types/pg': 8.11.2
       '@types/sqlite3': 3.1.11
-      axios: 1.12.0(debug@4.4.0)
+      axios: 1.12.0(debug@4.3.4)
       groq-sdk: 0.5.0(encoding@0.1.13)
       neo4j-driver: 5.27.0
       ollama: 0.5.11
@@ -36860,7 +36857,7 @@ snapshots:
 
   passport-auth0@1.4.4:
     dependencies:
-      axios: 1.12.0(debug@4.4.0)
+      axios: 1.12.0(debug@4.3.4)
       passport-oauth: 1.0.0
       passport-oauth2: 1.8.0
     transitivePeerDependencies:
@@ -37613,7 +37610,7 @@ snapshots:
 
   posthog-node@3.6.3:
     dependencies:
-      axios: 1.12.0(debug@4.4.0)
+      axios: 1.12.0(debug@4.3.4)
       rusha: 0.8.14
     transitivePeerDependencies:
       - debug
@@ -38780,7 +38777,7 @@ snapshots:
 
   retry-axios@2.6.0(axios@1.12.0):
     dependencies:
-      axios: 1.12.0(debug@4.4.0)
+      axios: 1.12.0(debug@4.3.4)
 
   retry-request@7.0.2(encoding@0.1.13):
     dependencies:
@@ -41258,7 +41255,7 @@ snapshots:
 
   wikipedia@2.1.2:
     dependencies:
-      axios: 1.12.0(debug@4.4.0)
+      axios: 1.12.0(debug@4.3.4)
       infobox-parser: 3.6.4
     transitivePeerDependencies:
       - debug

@@ -1,25 +1,8 @@
-import { Link } from 'react-router-dom'
-
-// material-ui
-import { ButtonBase } from '@mui/material'
-
-// project imports
-import config from '@/config'
-import Logo from '@/ui-component/extended/Logo'
-
 // ==============================|| MAIN LOGO ||============================== //
+// VibeForge Embedded: Logo permanently hidden in embedded mode
 
 const LogoSection = () => {
-    // VibeForge Embedded Mode: Hide logo
-    if (process.env.VIBEFORGE_EMBEDDED === 'true') {
-        return null
-    }
-
-    return (
-        <ButtonBase disableRipple component={Link} to={config.defaultPath}>
-            <Logo />
-        </ButtonBase>
-    )
+    return null
 }
 
 export default LogoSection

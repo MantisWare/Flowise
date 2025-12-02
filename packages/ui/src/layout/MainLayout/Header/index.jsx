@@ -149,6 +149,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
     const customization = useSelector((state) => state.customization)
     const logoutApi = useApi(accountApi.logout)
 
+    // VibeForge Embedded: Theme is controlled by parent application
     const [isDark, setIsDark] = useState(customization.isDarkMode)
     const dispatch = useDispatch()
     const { isEnterpriseLicensed, isCloud, isOpenSource } = useConfig()
@@ -157,18 +158,20 @@ const Header = ({ handleLeftDrawerToggle }) => {
     const [isPricingOpen, setIsPricingOpen] = useState(false)
     const [starCount, setStarCount] = useState(0)
 
-    // VibeForge Embedded Mode
-    const isEmbedded = process.env.VIBEFORGE_EMBEDDED === 'true'
+    // Sync with customization state (controlled by parent)
+    useEffect(() => {
+        setIsDark(customization.isDarkMode)
+    }, [customization.isDarkMode])
 
     useNotifier()
 
     const enqueueSnackbar = (...args) => dispatch(enqueueSnackbarAction(...args))
     const closeSnackbar = (...args) => dispatch(closeSnackbarAction(...args))
 
+    // VibeForge Embedded: Theme changes are disabled (controlled by parent)
     const changeDarkMode = () => {
-        dispatch({ type: SET_DARKMODE, isDarkMode: !isDark })
-        setIsDark((isDark) => !isDark)
-        localStorage.setItem('isDarkMode', !isDark)
+        // Disabled in embedded mode
+        return
     }
 
     const signOutClicked = () => {
@@ -271,48 +274,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
             ) : (
                 <Box sx={{ flexGrow: 1 }} />
             )}
-            {isEnterpriseLicensed && isAuthenticated && !isEmbedded && <WorkspaceSwitcher />}
-            {isCloud && isAuthenticated && !isEmbedded && <OrgWorkspaceBreadcrumbs />}
-            {isCloud && currentUser?.isOrganizationAdmin && !isEmbedded && (
-                <Button
-                    variant='contained'
-                    sx={{
-                        mr: 1,
-                        ml: 2,
-                        borderRadius: 15,
-                        background: (theme) =>
-                            `linear-gradient(90deg, ${theme.palette.primary.main} 10%, ${theme.palette.secondary.main} 100%)`,
-                        color: (theme) => theme.palette.secondary.contrastText,
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                            background: (theme) =>
-                                `linear-gradient(90deg, ${darken(theme.palette.primary.main, 0.1)} 10%, ${darken(
-                                    theme.palette.secondary.main,
-                                    0.1
-                                )} 100%)`,
-                            boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
-                        }
-                    }}
-                    onClick={() => setIsPricingOpen(true)}
-                    startIcon={<IconSparkles size={20} />}
-                >
-                    Upgrade
-                </Button>
-            )}
-            {isPricingOpen && isCloud && (
-                <PricingDialog
-                    open={isPricingOpen}
-                    onClose={(planUpdated) => {
-                        setIsPricingOpen(false)
-                        if (planUpdated) {
-                            navigate('/')
-                            navigate(0)
-                        }
-                    }}
-                />
-            )}
-            <MaterialUISwitch checked={isDark} onChange={changeDarkMode} />
+            {/* VibeForge Embedded: Hide workspace switcher, breadcrumbs, upgrade button, and theme toggle */}
             <Box sx={{ ml: 2 }}></Box>
             <ProfileSection handleLogout={signOutClicked} />
         </>
