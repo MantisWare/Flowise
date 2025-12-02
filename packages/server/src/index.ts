@@ -210,6 +210,30 @@ export class App {
         await initializeJwtCookieMiddleware(this.app, this.identityManager)
 
         this.app.use(async (req, res, next) => {
+            // VibeForge Embedded: Bypass all authentication checks in embedded mode
+            // Always authenticate with a mock admin user
+            if (URL_CASE_INSENSITIVE_REGEX.test(req.path) && URL_CASE_SENSITIVE_REGEX.test(req.path)) {
+                req.user = {
+                    id: 'vibeforge-embedded-user',
+                    name: 'VibeForge User',
+                    email: 'vibeforge@embedded.local',
+                    roleId: 'default-role',
+                    permissions: ['*'], // Global admin permissions
+                    features: {}, // All features enabled
+                    activeOrganizationId: 'default-org',
+                    activeOrganizationSubscriptionId: 'default-sub',
+                    activeOrganizationCustomerId: 'default-customer',
+                    activeOrganizationProductId: 'default-product',
+                    isOrganizationAdmin: true,
+                    activeWorkspaceId: 'default-workspace',
+                    activeWorkspace: 'Default Workspace',
+                    assignedWorkspaces: [],
+                    isApiKeyValidated: false
+                }
+                return next()
+            }
+
+            // Original authentication logic (kept for reference but unreachable)
             // Step 1: Check if the req path contains /api/v1 regardless of case
             if (URL_CASE_INSENSITIVE_REGEX.test(req.path)) {
                 // Step 2: Check if the req path is casesensitive
