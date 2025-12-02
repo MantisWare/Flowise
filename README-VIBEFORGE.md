@@ -83,7 +83,7 @@ The `VibeForgeEmb` branch contains permanent code modifications for embedded mod
 
 The following files contain permanent modifications in the `VibeForgeEmb` branch:
 
-**Authentication Bypass:**
+**Authentication Bypass (UI):**
 - `packages/ui/src/routes/RequireAuth.jsx`
   - Always returns children directly, bypassing all auth checks
 - `packages/ui/src/hooks/useAuth.jsx`
@@ -93,6 +93,14 @@ The following files contain permanent modifications in the `VibeForgeEmb` branch
 - `packages/ui/src/store/context/ErrorContext.jsx`
   - Permanently ignores 401/403 error redirects to login pages
   - Prevents global error handler from forcing login navigation
+
+**Authentication Bypass (Server):**
+- `packages/server/src/index.ts`
+  - Modified authentication middleware to bypass all token validation
+  - Automatically creates mock admin user for ALL `/api/v1/` requests
+  - Mock user has global admin permissions (`permissions: ['*']`)
+  - No API keys or JWT tokens required - all requests pass through
+  - Eliminates 401 "Unauthorized" errors completely
 
 **Branding Removal:**
 - `packages/ui/src/layout/MainLayout/LogoSection/index.jsx`
@@ -336,6 +344,8 @@ git merge origin/main
 If there are merge conflicts in the modified files, carefully preserve the embedded mode changes:
 
 **Critical files that must remain modified:**
+
+**UI Files:**
 - `packages/ui/src/routes/RequireAuth.jsx` - Must always bypass auth
 - `packages/ui/src/hooks/useAuth.jsx` - Must always return true
 - `packages/ui/src/store/reducers/authSlice.js` - Must have mock user
@@ -346,6 +356,9 @@ If there are merge conflicts in the modified files, carefully preserve the embed
 - `packages/ui/src/store/reducers/customizationReducer.js` - Must default to dark mode
 - `packages/ui/src/App.jsx` - Must listen for parent theme changes
 - `packages/ui/src/views/auth/login.jsx` and `signIn.jsx` - Must block redirects
+
+**Server Files:**
+- `packages/server/src/index.ts` - Must bypass authentication middleware with mock admin user
 
 Refer to the **Specific UI Modifications** section above for how each file should be configured.
 
