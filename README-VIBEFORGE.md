@@ -10,9 +10,9 @@ VibeForge embeds the Flowise UI directly into the application, allowing you to c
 
 When you run `pnpm install` in the VibeForge root directory, the postinstall script automatically:
 
-1. Initializes the Flowise git submodule
+1. Initializes the Flowise git submodule (using the `VibeForgeEmb` branch)
 2. Installs Flowise dependencies
-3. Builds the Flowise UI with embedded mode (`VIBEFORGE_EMBEDDED=true`)
+3. Builds the Flowise UI with permanent embedded mode changes
 
 ## Manual Scripts
 
@@ -67,7 +67,8 @@ pnpm run setup
 
 ### Embedded Mode
 
-When `VIBEFORGE_EMBEDDED=true` is set during build, the Flowise UI:
+The `VibeForgeEmb` branch contains permanent code modifications for embedded mode operation. These changes are not conditional - they're built directly into the code:
+
 - Disables authentication (bypasses login screens)
 - Hides Flowise branding (logo, upgrade buttons, marketplace)
 - Removes workspace/organization features
@@ -76,59 +77,50 @@ When `VIBEFORGE_EMBEDDED=true` is set during build, the Flowise UI:
 - Removes theme toggle (controlled by parent VibeForge application)
 - Prevents external browser redirects
 
+**Important:** The VibeForge project uses the `VibeForgeEmb` git submodule branch, which contains these permanent modifications. Do not switch to the main Flowise branch, as it will not work properly in the embedded environment.
+
 #### Specific UI Modifications
 
-The following files have been modified to support embedded mode with `VIBEFORGE_EMBEDDED=true`:
+The following files contain permanent modifications in the `VibeForgeEmb` branch:
 
 **Authentication Bypass:**
-- `packages/ui/src/routes/RequireAuth.jsx` (lines 39-42)
-  - Returns children directly when `VIBEFORGE_EMBEDDED=true`, bypassing all auth checks
-- `packages/ui/src/hooks/useAuth.jsx` (lines 11-16)
-  - Returns `true` for all permission checks in embedded mode
-- `packages/ui/src/store/reducers/authSlice.js` (lines 5-37)
+- `packages/ui/src/routes/RequireAuth.jsx`
+  - Always returns children directly, bypassing all auth checks
+- `packages/ui/src/hooks/useAuth.jsx`
+  - Always returns `true` for all permission checks
+- `packages/ui/src/store/reducers/authSlice.js`
   - Creates mock authenticated user with global admin permissions (`permissions: ['*']`)
-- `packages/ui/src/store/context/ErrorContext.jsx` (lines 15-52)
-  - Bypasses 401/403 error redirects to login pages in embedded mode
+- `packages/ui/src/store/context/ErrorContext.jsx`
+  - Permanently ignores 401/403 error redirects to login pages
   - Prevents global error handler from forcing login navigation
 
 **Branding Removal:**
-- `packages/ui/src/layout/MainLayout/LogoSection/index.jsx` (lines 13-16)
-  - Returns `null` to hide Flowise logo
-- `packages/ui/src/layout/MainLayout/Header/index.jsx` (lines 160-161, 274-276)
-  - Hides WorkspaceSwitcher, OrgWorkspaceBreadcrumbs, and Upgrade button
-  - Hides theme toggle switch (theme controlled by parent)
+- `packages/ui/src/layout/MainLayout/LogoSection/index.jsx`
+  - Permanently returns `null` to hide Flowise logo
+- `packages/ui/src/layout/MainLayout/Header/index.jsx`
+  - WorkspaceSwitcher, OrgWorkspaceBreadcrumbs, and Upgrade button permanently hidden
+  - Theme toggle switch permanently disabled (theme controlled by parent)
 
 **Theme Management:**
 - `packages/ui/src/store/reducers/customizationReducer.js`
-  - Forces dark mode default when `VIBEFORGE_EMBEDDED=true`
+  - Permanently defaults to dark mode
   - Allows theme changes from parent via `SET_DARKMODE` action
 - `packages/ui/src/App.jsx`
-  - Listens for `VIBEFORGE_THEME_CHANGE` messages from parent window
+  - Permanently listens for `VIBEFORGE_THEME_CHANGE` messages from parent window
   - Updates Flowise UI theme when VibeForge theme changes
 - `packages/ui/src/views/auth/login.jsx` and `signIn.jsx`
-  - Prevents external redirects when `VIBEFORGE_EMBEDDED=true`
+  - Permanently blocks external redirects
 
 **Advanced Features Hidden:**
-- `packages/ui/src/menu-items/dashboard.js` (lines 99-112, 140-153, 213-274, 275-314)
-  - Hides Marketplace menu item
-  - Hides API Keys menu item
-  - Hides entire "User & Workspace Management" section (SSO Config, Roles, Users, Workspaces, Login Activity)
-  - Hides entire "Others" section (Logs, Account Settings)
+- `packages/ui/src/menu-items/dashboard.js`
+  - Permanently removed Marketplace menu item
+  - Permanently removed API Keys menu item
+  - Permanently removed entire "User & Workspace Management" section (SSO Config, Roles, Users, Workspaces, Login Activity)
+  - Permanently removed entire "Others" section (Logs, Account Settings)
+  - Menu completely rewritten with only essential items
 
-**Pattern Used:**
-All modifications use conditional rendering with the `VIBEFORGE_EMBEDDED` environment variable:
-```javascript
-const isEmbedded = process.env.VIBEFORGE_EMBEDDED === 'true'
-
-// For array items (menu items):
-...(!isEmbedded ? [{ item }] : [])
-
-// For components:
-{!isEmbedded && <Component />}
-
-// For early returns:
-if (isEmbedded) return null
-```
+**Implementation Approach:**
+All modifications are permanent code changes - there are no conditional checks or environment variables. The `VibeForgeEmb` branch is a dedicated embedded version that always operates in embedded mode.
 
 ### Backend Integration
 
@@ -140,7 +132,7 @@ The Flowise backend server:
 - Supports port auto-increment for multiple instances
 - Features automatic restart with exponential backoff on crashes
 - Serves both the API backend and UI from the same port (port 3000)
-- UI is built with embedded mode enabled (`VIBEFORGE_EMBEDDED=true`)
+- UI is built from the `VibeForgeEmb` branch with permanent embedded mode changes
 
 ### Key Files
 
@@ -234,15 +226,17 @@ Check the debug window (in dev mode) or console logs to see crash reasons.
 
 ### Building for Embedded Mode
 
-Always use the `VIBEFORGE_EMBEDDED=true` environment variable when building the UI. The build scripts in the root `package.json` ensure this is set automatically:
+The UI is built from the `VibeForgeEmb` branch, which contains all necessary permanent modifications for embedded mode:
 
 ```bash
-# Build UI with embedded mode (automatic)
+# Build UI (uses VibeForgeEmb branch automatically)
 pnpm run flowise:build-ui
 
-# Build both server and UI (automatic)
+# Build both server and UI
 pnpm run flowise:build
 ```
+
+**Important:** Always ensure the Flowise submodule is on the `VibeForgeEmb` branch. Do not switch to the main branch, as it lacks the embedded mode modifications.
 
 **Note:** The Flowise UI is served from the same port as the Flowise server (port 3000). There is no separate UI dev server.
 
@@ -309,48 +303,70 @@ The `findAvailablePort()` method tries up to 100 ports starting from the configu
 
 ## Updating Flowise Submodule
 
-When updating the Flowise submodule to a newer version, follow these steps carefully:
+**Important:** The VibeForge project uses the `VibeForgeEmb` branch of the Flowise submodule, which contains permanent modifications for embedded mode. This branch is separate from the main Flowise branch.
 
-### 1. Update the Submodule
+### Updating to a Newer Version
+
+When merging changes from the main Flowise repository into the `VibeForgeEmb` branch:
+
+### 1. Navigate to the Submodule
+
+```bash
+cd packages/flowise
+```
+
+### 2. Fetch Latest Changes
+
+```bash
+git fetch origin
+```
+
+### 3. Merge Main Branch into VibeForgeEmb
+
+```bash
+# Ensure you're on the VibeForgeEmb branch
+git checkout VibeForgeEmb
+
+# Merge the latest from main Flowise branch
+git merge origin/main
+```
+
+### 4. Resolve Conflicts
+
+If there are merge conflicts in the modified files, carefully preserve the embedded mode changes:
+
+**Critical files that must remain modified:**
+- `packages/ui/src/routes/RequireAuth.jsx` - Must always bypass auth
+- `packages/ui/src/hooks/useAuth.jsx` - Must always return true
+- `packages/ui/src/store/reducers/authSlice.js` - Must have mock user
+- `packages/ui/src/store/context/ErrorContext.jsx` - Must ignore 401/403 errors
+- `packages/ui/src/layout/MainLayout/LogoSection/index.jsx` - Must return null
+- `packages/ui/src/layout/MainLayout/Header/index.jsx` - Must hide enterprise features
+- `packages/ui/src/menu-items/dashboard.js` - Must have simplified menu
+- `packages/ui/src/store/reducers/customizationReducer.js` - Must default to dark mode
+- `packages/ui/src/App.jsx` - Must listen for parent theme changes
+- `packages/ui/src/views/auth/login.jsx` and `signIn.jsx` - Must block redirects
+
+Refer to the **Specific UI Modifications** section above for how each file should be configured.
+
+### 5. Commit the Merge
+
+```bash
+git add .
+git commit -m "Merge main Flowise updates into VibeForgeEmb branch"
+```
+
+### 6. Rebuild
+
+After merging and resolving conflicts:
 
 ```bash
 # From VibeForge root
-pnpm run submodule:pull-latest
-```
-
-### 2. Check for Conflicts
-
-After updating, verify that the embedded mode modifications are still present in these files:
-
-**Critical files to check:**
-- `packages/flowise/packages/ui/src/routes/RequireAuth.jsx`
-- `packages/flowise/packages/ui/src/hooks/useAuth.jsx`
-- `packages/flowise/packages/ui/src/store/reducers/authSlice.js`
-- `packages/flowise/packages/ui/src/layout/MainLayout/LogoSection/index.jsx`
-- `packages/flowise/packages/ui/src/layout/MainLayout/Header/index.jsx`
-- `packages/flowise/packages/ui/src/menu-items/dashboard.js`
-
-### 3. Reapply Modifications if Needed
-
-If the update overwrites any modifications, search for the `VIBEFORGE_EMBEDDED` environment variable in each file:
-
-```bash
-cd packages/flowise/packages/ui
-grep -r "VIBEFORGE_EMBEDDED" src/
-```
-
-If any file is missing the embedded mode logic, refer to the **Specific UI Modifications** section above to reapply the changes.
-
-### 4. Rebuild
-
-After verifying or reapplying modifications:
-
-```bash
-# From VibeForge root
+cd ../..
 pnpm run flowise:rebuild
 ```
 
-### 5. Test
+### 7. Test
 
 Start VibeForge in dev mode and verify:
 - ✅ No login screen appears
@@ -362,6 +378,12 @@ Start VibeForge in dev mode and verify:
 - ✅ External browser windows and redirects are blocked
 - ✅ Console logs from Flowise UI appear in debug console panel
 - ✅ Agents sync to VibeForge Planning Board
+
+### Branch Management
+
+- **Never** merge VibeForgeEmb back into main Flowise branch
+- **Always** keep VibeForgeEmb as the active branch in the submodule
+- Pull updates from main Flowise by merging into VibeForgeEmb (one-way)
 
 ## Support
 
