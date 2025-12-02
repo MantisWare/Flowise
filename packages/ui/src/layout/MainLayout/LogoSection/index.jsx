@@ -9,10 +9,17 @@ import Logo from '@/ui-component/extended/Logo'
 
 // ==============================|| MAIN LOGO ||============================== //
 
-const LogoSection = () => (
-    <ButtonBase disableRipple component={Link} to={config.defaultPath}>
-        <Logo />
-    </ButtonBase>
-)
+const LogoSection = () => {
+    // VibeForge Embedded Mode: Hide logo
+    if (process.env.VIBEFORGE_EMBEDDED === 'true') {
+        return null
+    }
+
+    return (
+        <ButtonBase disableRipple component={Link} to={config.defaultPath}>
+            <Logo />
+        </ButtonBase>
+    )
+}
 
 export default LogoSection

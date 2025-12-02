@@ -31,6 +31,11 @@ const ResolveLoginPage = () => {
     useEffect(() => {
         setLoading(false)
         if (resolveLogin.data) {
+            // VibeForge Embedded Mode: Prevent external redirects
+            if (process.env.VIBEFORGE_EMBEDDED === 'true') {
+                console.log('VibeForge Embedded Mode: Blocked external redirect to', resolveLogin.data.redirectUrl)
+                return
+            }
             window.location.href = resolveLogin.data.redirectUrl
         }
     }, [resolveLogin.data])

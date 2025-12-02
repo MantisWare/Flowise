@@ -157,6 +157,9 @@ const Header = ({ handleLeftDrawerToggle }) => {
     const [isPricingOpen, setIsPricingOpen] = useState(false)
     const [starCount, setStarCount] = useState(0)
 
+    // VibeForge Embedded Mode
+    const isEmbedded = process.env.VIBEFORGE_EMBEDDED === 'true'
+
     useNotifier()
 
     const enqueueSnackbar = (...args) => dispatch(enqueueSnackbarAction(...args))
@@ -268,9 +271,9 @@ const Header = ({ handleLeftDrawerToggle }) => {
             ) : (
                 <Box sx={{ flexGrow: 1 }} />
             )}
-            {isEnterpriseLicensed && isAuthenticated && <WorkspaceSwitcher />}
-            {isCloud && isAuthenticated && <OrgWorkspaceBreadcrumbs />}
-            {isCloud && currentUser?.isOrganizationAdmin && (
+            {isEnterpriseLicensed && isAuthenticated && !isEmbedded && <WorkspaceSwitcher />}
+            {isCloud && isAuthenticated && !isEmbedded && <OrgWorkspaceBreadcrumbs />}
+            {isCloud && currentUser?.isOrganizationAdmin && !isEmbedded && (
                 <Button
                     variant='contained'
                     sx={{

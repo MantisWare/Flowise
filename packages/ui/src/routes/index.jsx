@@ -11,5 +11,10 @@ import ExecutionRoutes from './ExecutionRoutes'
 // ==============================|| ROUTING RENDER ||============================== //
 
 export default function ThemeRoutes() {
-    return useRoutes([MainRoutes, AuthRoutes, CanvasRoutes, ChatbotRoutes, ExecutionRoutes], config.basename)
+    // VibeForge Embedded Mode: Exclude auth routes
+    const routes = process.env.VIBEFORGE_EMBEDDED === 'true'
+        ? [MainRoutes, CanvasRoutes, ChatbotRoutes, ExecutionRoutes]
+        : [MainRoutes, AuthRoutes, CanvasRoutes, ChatbotRoutes, ExecutionRoutes]
+
+    return useRoutes(routes, config.basename)
 }

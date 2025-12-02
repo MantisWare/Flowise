@@ -2,20 +2,39 @@
 import { createSlice } from '@reduxjs/toolkit'
 import AuthUtils from '@/utils/authUtils'
 
-const initialState = {
-    user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
-    isAuthenticated: 'true' === localStorage.getItem('isAuthenticated'),
-    isGlobal: 'true' === localStorage.getItem('isGlobal'),
-    token: null,
-    permissions:
-        localStorage.getItem('permissions') && localStorage.getItem('permissions') !== 'undefined'
-            ? JSON.parse(localStorage.getItem('permissions'))
-            : null,
-    features:
-        localStorage.getItem('features') && localStorage.getItem('features') !== 'undefined'
-            ? JSON.parse(localStorage.getItem('features'))
-            : null
-}
+// VibeForge Embedded Mode: Create mock authenticated user
+const createEmbeddedUser = () => ({
+    id: 'vibeforge-embedded-user',
+    username: 'VibeForge User',
+    email: 'vibeforge@embedded.local',
+    name: 'VibeForge User',
+    assignedWorkspaces: [],
+    activeWorkspaceId: 'default'
+})
+
+const initialState = process.env.VIBEFORGE_EMBEDDED === 'true'
+    ? {
+          user: createEmbeddedUser(),
+          isAuthenticated: true,
+          isGlobal: true,
+          token: 'vibeforge-embedded-token',
+          permissions: ['*'],
+          features: {}
+      }
+    : {
+          user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
+          isAuthenticated: 'true' === localStorage.getItem('isAuthenticated'),
+          isGlobal: 'true' === localStorage.getItem('isGlobal'),
+          token: null,
+          permissions:
+              localStorage.getItem('permissions') && localStorage.getItem('permissions') !== 'undefined'
+                  ? JSON.parse(localStorage.getItem('permissions'))
+                  : null,
+          features:
+              localStorage.getItem('features') && localStorage.getItem('features') !== 'undefined'
+                  ? JSON.parse(localStorage.getItem('features'))
+                  : null
+      }
 
 const authSlice = createSlice({
     name: 'auth',

@@ -36,6 +36,11 @@ export const RequireAuth = ({ permission, display, children }) => {
     const features = useSelector((state) => state.auth.features)
     const permissions = useSelector((state) => state.auth.permissions)
 
+    // VibeForge Embedded Mode: Bypass all authentication
+    if (process.env.VIBEFORGE_EMBEDDED === 'true') {
+        return children
+    }
+
     // Step 1: Authentication Check
     // Redirect to login if user is not authenticated
     if (!currentUser) {

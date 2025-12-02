@@ -8,7 +8,13 @@ export const useAuth = () => {
     const isGlobal = useSelector((state) => state.auth.isGlobal)
     const currentUser = useSelector((state) => state.auth.user)
 
+    // VibeForge Embedded Mode: Always return true
+    const isEmbedded = process.env.VIBEFORGE_EMBEDDED === 'true'
+
     const hasPermission = (permissionId) => {
+        if (isEmbedded) {
+            return true
+        }
         if (isOpenSource || isGlobal) {
             return true
         }
@@ -21,6 +27,9 @@ export const useAuth = () => {
     }
 
     const hasAssignedWorkspace = (workspaceId) => {
+        if (isEmbedded) {
+            return true
+        }
         if (isOpenSource || isGlobal) {
             return true
         }
@@ -32,6 +41,9 @@ export const useAuth = () => {
     }
 
     const hasDisplay = (display) => {
+        if (isEmbedded) {
+            return true
+        }
         if (!display) {
             return true
         }
