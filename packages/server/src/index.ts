@@ -32,6 +32,7 @@ import 'global-agent/bootstrap'
 import { UsageCacheManager } from './UsageCacheManager'
 import { Workspace } from './enterprise/database/entities/workspace.entity'
 import { Organization } from './enterprise/database/entities/organization.entity'
+import { User } from './enterprise/database/entities/user.entity'
 import { GeneralRole, Role } from './enterprise/database/entities/role.entity'
 import { migrateApiKeysFromJsonToDb } from './utils/apiKey'
 import { ExpressAdapter } from '@bull-board/express'
@@ -88,6 +89,9 @@ export class App {
             // Run Migrations Scripts
             await this.AppDataSource.runMigrations({ transaction: 'each' })
             logger.info('🔄 [server]: Database migrations completed successfully')
+
+            // VibeForge Embedded: FK fix - Create default entities for embedded mode
+            await this.createDefaultEntitiesForEmbeddedMode()
 
             // Initialize Identity Manager
             this.identityManager = await IdentityManager.getInstance()
@@ -158,6 +162,67 @@ export class App {
             logger.info('🎉 [server]: All initialization steps completed successfully!')
         } catch (error) {
             logger.error('❌ [server]: Error during Data Source initialization:', error)
+        }
+    }
+
+    // VibeForge Embedded: FK fix - Create default entities for embedded mode
+    async createDefaultEntitiesForEmbeddedMode() {
+        try {
+            const userRepo = this.AppDataSource.getRepository(User)
+            const orgRepo = this.AppDataSource.getRepository(Organization)
+            const workspaceRepo = this.AppDataSource.getRepository(Workspace)
+
+            // Check if default user exists
+            let defaultUser = await userRepo.findOne({ where: { id: 'vibeforge-embedded-user' } })
+            if (!defaultUser) {
+                // Create default user with fixed ID
+                defaultUser = userRepo.create({
+                    id: 'vibeforge-embedded-user',
+                    name: 'VibeForge User',
+                    email: 'vibeforge@embedded.local',
+                    status: 'active',
+                    createdBy: 'vibeforge-embedded-user', // Self-reference
+                    updatedBy: 'vibeforge-embedded-user'
+                })
+                await userRepo.save(defaultUser)
+                logger.info('✅ [server]: Default user created for embedded mode')
+            }
+
+            // Check if default organization exists
+            let defaultOrg = await orgRepo.findOne({ where: { id: 'default-org' } })
+            if (!defaultOrg) {
+                // Create default organization with fixed ID
+                defaultOrg = orgRepo.create({
+                    id: 'default-org',
+                    name: 'Default Organization',
+                    customerId: 'default-customer',
+                    subscriptionId: 'default-sub',
+                    createdBy: 'vibeforge-embedded-user',
+                    updatedBy: 'vibeforge-embedded-user'
+                })
+                await orgRepo.save(defaultOrg)
+                logger.info('✅ [server]: Default organization created for embedded mode')
+            }
+
+            // Check if default workspace exists
+            let defaultWorkspace = await workspaceRepo.findOne({ where: { id: 'default-workspace' } })
+            if (!defaultWorkspace) {
+                // Create default workspace with fixed ID
+                defaultWorkspace = workspaceRepo.create({
+                    id: 'default-workspace',
+                    name: 'Default Workspace',
+                    organizationId: 'default-org',
+                    createdBy: 'vibeforge-embedded-user',
+                    updatedBy: 'vibeforge-embedded-user'
+                })
+                await workspaceRepo.save(defaultWorkspace)
+                logger.info('✅ [server]: Default workspace created for embedded mode')
+            }
+
+            logger.info('🎯 [server]: Embedded mode default entities verified/created')
+        } catch (error) {
+            logger.error('❌ [server]: Error creating default entities for embedded mode:', error)
+            throw error
         }
     }
 

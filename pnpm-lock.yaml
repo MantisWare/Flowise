@@ -319,7 +319,7 @@ importers:
         version: 4.3.2(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       axios:
         specifier: 1.12.0
-        version: 1.12.0(debug@4.3.4)
+        version: 1.12.0(debug@4.4.0)
       cheerio:
         specifier: ^1.0.0-rc.12
         version: 1.0.0-rc.12
@@ -656,7 +656,7 @@ importers:
         version: 0.4.1
       axios:
         specifier: 1.12.0
-        version: 1.12.0(debug@4.3.4)
+        version: 1.12.0(debug@4.4.0)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -817,7 +817,7 @@ importers:
         specifier: ^2.11.0
         version: 2.12.1
       sqlite3:
-        specifier: ^5.1.6
+        specifier: ^5.1.7
         version: 5.1.7
       stripe:
         specifier: ^15.6.0
@@ -1020,7 +1020,7 @@ importers:
         version: 4.21.24(@babel/runtime@7.26.10)(@codemirror/autocomplete@6.14.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.3)(@lezer/common@1.2.1))(@codemirror/language@6.10.1)(@codemirror/lint@6.5.0)(@codemirror/search@6.5.6)(@codemirror/state@6.4.1)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.26.3)(codemirror@6.0.1(@lezer/common@1.2.1))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       axios:
         specifier: 1.12.0
-        version: 1.12.0(debug@4.3.4)
+        version: 1.12.0(debug@4.4.0)
       clsx:
         specifier: ^1.1.1
         version: 1.2.1
@@ -1159,7 +1159,7 @@ importers:
         version: 4.2.1(vite@5.1.6(@types/node@22.16.3)(sass@1.71.1)(terser@5.29.1))
       pretty-quick:
         specifier: ^3.1.3
-        version: 3.3.1(prettier@3.2.5)
+        version: 3.3.1(prettier@2.8.8)
       react-scripts:
         specifier: ^5.0.1
         version: 5.0.1(@babel/plugin-syntax-flow@7.23.3(@babel/core@7.24.0))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.24.0))(@swc/core@1.4.6)(@types/babel__core@7.20.5)(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(eslint@8.57.0)(react@18.2.0)(sass@1.71.1)(ts-node@10.9.2(@swc/core@1.4.6)(@types/node@22.16.3)(typescript@5.5.2))(type-fest@4.40.1)(typescript@5.5.2)(utf-8-validate@6.0.4)
@@ -13286,6 +13286,7 @@ packages:
 
   mathjax-full@3.2.2:
     resolution: {integrity: sha512-+LfG9Fik+OuI8SLwsiR02IVdjcnRCy5MufYLi0C3TdMT56L/pjB0alMVGgoWJF8pN9Rc7FESycZB9BMNWIid5w==}
+    deprecated: Version 4 replaces this package with the scoped package @mathjax/src
 
   md-utils-ts@2.0.0:
     resolution: {integrity: sha512-sMG6JtX0ebcRMHxYTcmgsh0/m6o8hGdQHFE2OgjvflRZlQM51CGGj/uuk056D+12BlCiW0aTpt/AdlDNtgQiew==}
@@ -24337,7 +24338,7 @@ snapshots:
     dependencies:
       '@langchain/community': 0.3.49(aca7fe1482d36285281b5a91abdff950)
       '@langchain/core': 0.3.61(openai@4.96.0(encoding@0.1.13)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))(zod@3.22.4))
-      axios: 1.12.0(debug@4.3.4)
+      axios: 1.12.0(debug@4.4.0)
       mem0ai: 2.1.16(@anthropic-ai/sdk@0.37.0(encoding@0.1.13))(@google/genai@0.7.0(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@6.0.4))(@mistralai/mistralai@0.1.3(encoding@0.1.13))(@qdrant/js-client-rest@1.9.0(typescript@5.5.2))(@supabase/supabase-js@2.39.8(bufferutil@4.0.8)(utf-8-validate@6.0.4))(@types/jest@29.5.14)(@types/pg@8.11.2)(@types/sqlite3@3.1.11)(encoding@0.1.13)(groq-sdk@0.5.0(encoding@0.1.13))(neo4j-driver@5.27.0)(ollama@0.5.11)(pg@8.11.3)(redis@4.6.13)(sqlite3@5.1.7)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       uuid: 9.0.1
       zod: 3.22.4
@@ -24493,7 +24494,7 @@ snapshots:
 
   '@mendable/firecrawl-js@1.25.1':
     dependencies:
-      axios: 1.12.0(debug@4.3.4)
+      axios: 1.12.0(debug@4.4.0)
       typescript-event-target: 1.1.1
       zod: 3.24.2
       zod-to-json-schema: 3.24.1(zod@3.24.2)
@@ -28889,7 +28890,7 @@ snapshots:
       '@crawlee/types': 3.8.1
       agentkeepalive: 4.5.0
       async-retry: 1.3.3
-      axios: 1.12.0(debug@4.3.4)
+      axios: 1.12.0(debug@4.4.0)
       content-type: 1.0.5
       ow: 0.28.2
       tslib: 2.6.2
@@ -32308,7 +32309,7 @@ snapshots:
       '@babel/core': 7.24.0
       '@microsoft/fetch-event-source': 2.0.1
       '@ts-stack/markdown': 1.5.0
-      axios: 1.12.0(debug@4.3.4)
+      axios: 1.12.0(debug@4.4.0)
       cors: 2.8.5
       cross-env: 7.0.3
       device-detector-js: 3.0.3
@@ -34904,7 +34905,7 @@ snapshots:
       '@langchain/groq': 0.1.2(@langchain/core@0.3.61(openai@4.96.0(encoding@0.1.13)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))(zod@3.22.4)))(encoding@0.1.13)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@langchain/mistralai': 0.2.0(@langchain/core@0.3.61(openai@4.96.0(encoding@0.1.13)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))(zod@3.22.4)))
       '@langchain/ollama': 0.2.0(@langchain/core@0.3.61(openai@4.96.0(encoding@0.1.13)(ws@8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))(zod@3.22.4)))
-      axios: 1.12.0(debug@4.3.4)
+      axios: 1.12.0(debug@4.4.0)
       cheerio: 1.0.0-rc.12
       handlebars: 4.7.8
       typeorm: 0.3.20(ioredis@5.3.2)(mongodb@6.3.0(socks@2.8.1))(mysql2@3.11.4)(pg@8.11.3)(redis@4.6.13)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.4.6)(@types/node@22.16.3)(typescript@5.5.2))
@@ -35628,7 +35629,7 @@ snapshots:
       '@types/jest': 29.5.14
       '@types/pg': 8.11.2
       '@types/sqlite3': 3.1.11
-      axios: 1.12.0(debug@4.3.4)
+      axios: 1.12.0(debug@4.4.0)
       groq-sdk: 0.5.0(encoding@0.1.13)
       neo4j-driver: 5.27.0
       ollama: 0.5.11
@@ -36857,7 +36858,7 @@ snapshots:
 
   passport-auth0@1.4.4:
     dependencies:
-      axios: 1.12.0(debug@4.3.4)
+      axios: 1.12.0(debug@4.4.0)
       passport-oauth: 1.0.0
       passport-oauth2: 1.8.0
     transitivePeerDependencies:
@@ -37610,7 +37611,7 @@ snapshots:
 
   posthog-node@3.6.3:
     dependencies:
-      axios: 1.12.0(debug@4.3.4)
+      axios: 1.12.0(debug@4.4.0)
       rusha: 0.8.14
     transitivePeerDependencies:
       - debug
@@ -37683,17 +37684,6 @@ snapshots:
       picocolors: 1.0.0
       picomatch: 3.0.1
       prettier: 2.8.8
-      tslib: 2.6.2
-
-  pretty-quick@3.3.1(prettier@3.2.5):
-    dependencies:
-      execa: 4.1.0
-      find-up: 4.1.0
-      ignore: 5.3.1
-      mri: 1.2.0
-      picocolors: 1.0.0
-      picomatch: 3.0.1
-      prettier: 3.2.5
       tslib: 2.6.2
 
   prism-react-renderer@1.3.5(react@18.2.0):
@@ -38777,7 +38767,7 @@ snapshots:
 
   retry-axios@2.6.0(axios@1.12.0):
     dependencies:
-      axios: 1.12.0(debug@4.3.4)
+      axios: 1.12.0(debug@4.4.0)
 
   retry-request@7.0.2(encoding@0.1.13):
     dependencies:
@@ -41255,7 +41245,7 @@ snapshots:
 
   wikipedia@2.1.2:
     dependencies:
-      axios: 1.12.0(debug@4.3.4)
+      axios: 1.12.0(debug@4.4.0)
       infobox-parser: 3.6.4
     transitivePeerDependencies:
       - debug

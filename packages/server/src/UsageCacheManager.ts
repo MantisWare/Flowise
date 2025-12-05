@@ -5,12 +5,13 @@ import { MODE } from './Interface'
 import { LICENSE_QUOTAS } from './utils/constants'
 import { StripeManager } from './StripeManager'
 
+// VibeForge Embedded: Subscription removed - All quotas are now unlimited
 const DISABLED_QUOTAS = {
-    [LICENSE_QUOTAS.PREDICTIONS_LIMIT]: 0,
-    [LICENSE_QUOTAS.STORAGE_LIMIT]: 0, // in MB
-    [LICENSE_QUOTAS.FLOWS_LIMIT]: 0,
-    [LICENSE_QUOTAS.USERS_LIMIT]: 0,
-    [LICENSE_QUOTAS.ADDITIONAL_SEATS_LIMIT]: 0
+    [LICENSE_QUOTAS.PREDICTIONS_LIMIT]: -1,
+    [LICENSE_QUOTAS.STORAGE_LIMIT]: -1, // in MB
+    [LICENSE_QUOTAS.FLOWS_LIMIT]: -1,
+    [LICENSE_QUOTAS.USERS_LIMIT]: -1,
+    [LICENSE_QUOTAS.ADDITIONAL_SEATS_LIMIT]: -1
 }
 
 const UNLIMITED_QUOTAS = {
@@ -65,76 +66,13 @@ export class UsageCacheManager {
     }
 
     public async getSubscriptionDetails(subscriptionId: string, withoutCache: boolean = false): Promise<Record<string, any>> {
-        const stripeManager = await StripeManager.getInstance()
-        if (!stripeManager || !subscriptionId) {
-            return UNLIMITED_QUOTAS
-        }
-
-        // Skip cache if withoutCache is true
-        if (!withoutCache) {
-            const subscriptionData = await this.getSubscriptionDataFromCache(subscriptionId)
-            if (subscriptionData?.subsriptionDetails) {
-                return subscriptionData.subsriptionDetails
-            }
-        }
-
-        // If not in cache, retrieve from Stripe
-        const subscription = await stripeManager.getStripe().subscriptions.retrieve(subscriptionId)
-
-        // Update subscription data cache
-        await this.updateSubscriptionDataToCache(subscriptionId, { subsriptionDetails: stripeManager.getSubscriptionObject(subscription) })
-
-        return stripeManager.getSubscriptionObject(subscription)
+        // VibeForge Embedded: Subscription removed - Return mock subscription details
+        return { customer: '', status: 'active', created: Math.floor(Date.now() / 1000) }
     }
 
     public async getQuotas(subscriptionId: string, withoutCache: boolean = false): Promise<Record<string, number>> {
-        const stripeManager = await StripeManager.getInstance()
-        if (!stripeManager || !subscriptionId) {
-            return UNLIMITED_QUOTAS
-        }
-
-        // Skip cache if withoutCache is true
-        if (!withoutCache) {
-            const subscriptionData = await this.getSubscriptionDataFromCache(subscriptionId)
-            if (subscriptionData?.quotas) {
-                return subscriptionData.quotas
-            }
-        }
-
-        // If not in cache, retrieve from Stripe
-        const subscription = await stripeManager.getStripe().subscriptions.retrieve(subscriptionId)
-        const items = subscription.items.data
-        if (items.length === 0) {
-            return DISABLED_QUOTAS
-        }
-
-        const productId = items[0].price.product as string
-        const product = await stripeManager.getStripe().products.retrieve(productId)
-        const productMetadata = product.metadata
-
-        if (!productMetadata || Object.keys(productMetadata).length === 0) {
-            return DISABLED_QUOTAS
-        }
-
-        const quotas: Record<string, number> = {}
-        for (const key in productMetadata) {
-            if (key.startsWith('quota:')) {
-                quotas[key] = parseInt(productMetadata[key])
-            }
-        }
-
-        const additionalSeatsItem = subscription.items.data.find(
-            (item) => (item.price.product as string) === process.env.ADDITIONAL_SEAT_ID
-        )
-        quotas[LICENSE_QUOTAS.ADDITIONAL_SEATS_LIMIT] = additionalSeatsItem?.quantity || 0
-
-        // Update subscription data cache with quotas
-        await this.updateSubscriptionDataToCache(subscriptionId, {
-            quotas,
-            subsriptionDetails: stripeManager.getSubscriptionObject(subscription)
-        })
-
-        return quotas
+        // VibeForge Embedded: Subscription removed - Always return unlimited quotas
+        return UNLIMITED_QUOTAS
     }
 
     public async getSubscriptionDataFromCache(subscriptionId: string) {

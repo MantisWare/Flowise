@@ -126,19 +126,16 @@ export class AccountService {
                 data.user = await this.userService.createNewUser(data.user, queryRunner)
                 break
             case Platform.CLOUD: {
+                // VibeForge Embedded: Subscription removed - No Stripe subscription needed
                 const user = await this.userService.readUserByEmail(data.user.email, queryRunner)
                 if (user && (user.status === UserStatus.ACTIVE || user.status === UserStatus.UNVERIFIED))
                     throw new InternalFlowiseError(StatusCodes.NOT_FOUND, UserErrorMessage.USER_EMAIL_ALREADY_EXISTS)
 
                 if (!data.user.email) throw new InternalFlowiseError(StatusCodes.BAD_REQUEST, UserErrorMessage.INVALID_USER_EMAIL)
-                const { customerId, subscriptionId } = await this.identityManager.createStripeUserAndSubscribe({
-                    email: data.user.email,
-                    userPlan: UserPlan.FREE,
-                    // @ts-ignore
-                    referral: data.user.referral || ''
-                })
-                data.organization.customerId = customerId
-                data.organization.subscriptionId = subscriptionId
+
+                // No Stripe subscription - just set empty values
+                data.organization.customerId = ''
+                data.organization.subscriptionId = ''
 
                 // if credential exists then the user is signing up with email/password
                 // if not then the user is signing up with oauth/sso
@@ -295,7 +292,8 @@ export class AccountService {
             data.role = role
             const user = await this.userService.readUserByEmail(data.user.email, queryRunner)
             if (!user) {
-                await checkUsageLimit('users', subscriptionId, getRunningExpressApp().usageCacheManager, totalOrgUsers + 1)
+                // VibeForge Embedded: Subscription removed - No user limit check needed
+                // await checkUsageLimit('users', subscriptionId, getRunningExpressApp().usageCacheManager, totalOrgUsers + 1)
 
                 // generate a temporary token
                 data.user.tempToken = generateTempToken()
@@ -349,7 +347,8 @@ export class AccountService {
                 queryRunner
             )
             if (!organizationUser) {
-                await checkUsageLimit('users', subscriptionId, getRunningExpressApp().usageCacheManager, totalOrgUsers + 1)
+                // VibeForge Embedded: Subscription removed - No user limit check needed
+                // await checkUsageLimit('users', subscriptionId, getRunningExpressApp().usageCacheManager, totalOrgUsers + 1)
                 data.organizationUser.organizationId = data.workspace.organizationId
                 data.organizationUser.userId = user.id
                 const roleMember = await this.roleService.readGeneralRoleByName(GeneralRole.MEMBER, queryRunner)

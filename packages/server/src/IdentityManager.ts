@@ -251,274 +251,110 @@ export class IdentityManager {
     }
 
     public async getProductIdFromSubscription(subscriptionId: string) {
-        if (!subscriptionId) return ''
-        if (!this.stripeManager) {
-            throw new Error('Stripe manager is not initialized')
-        }
-        return await this.stripeManager.getProductIdFromSubscription(subscriptionId)
+        // VibeForge Embedded: Subscription removed - Always return empty string
+        return ''
     }
 
     public async getFeaturesByPlan(subscriptionId: string, withoutCache: boolean = false) {
-        if (this.isEnterprise()) {
-            const features: Record<string, string> = {}
-            for (const feature of ENTERPRISE_FEATURE_FLAGS) {
-                features[feature] = 'true'
-            }
-            return features
-        } else if (this.isCloud()) {
-            if (!this.stripeManager || !subscriptionId) {
-                return {}
-            }
-            return await this.stripeManager.getFeaturesByPlan(subscriptionId, withoutCache)
+        // VibeForge Embedded: Subscription removed - All features enabled by default
+        const features: Record<string, string> = {}
+        for (const feature of ENTERPRISE_FEATURE_FLAGS) {
+            features[feature] = 'true'
         }
-        return {}
+        return features
     }
 
     public static checkFeatureByPlan(feature: string) {
         return (req: Request, res: Response, next: NextFunction) => {
-            const user = req.user
-            if (user) {
-                if (!user.features || Object.keys(user.features).length === 0) {
-                    return res.status(403).json({ message: ErrorMessage.FORBIDDEN })
-                }
-                if (Object.keys(user.features).includes(feature) && user.features[feature] === 'true') {
-                    return next()
-                }
-            }
-            return res.status(403).json({ message: ErrorMessage.FORBIDDEN })
+            // VibeForge Embedded: Subscription removed - All features always allowed
+            return next()
         }
     }
 
     public async createStripeCustomerPortalSession(req: Request) {
-        if (!this.stripeManager) {
-            throw new Error('Stripe manager is not initialized')
-        }
-        return await this.stripeManager.createStripeCustomerPortalSession(req)
+        // VibeForge Embedded: Subscription removed - Return empty URL (no portal needed)
+        return { url: '' }
     }
 
     public async getAdditionalSeatsQuantity(subscriptionId: string) {
-        if (!subscriptionId) return {}
-        if (!this.stripeManager) {
-            throw new Error('Stripe manager is not initialized')
-        }
-        return await this.stripeManager.getAdditionalSeatsQuantity(subscriptionId)
+        // VibeForge Embedded: Subscription removed - Return unlimited seats
+        return { quantity: 0, includedSeats: -1 }
     }
 
     public async getCustomerWithDefaultSource(customerId: string) {
-        if (!customerId) return
-        if (!this.stripeManager) {
-            throw new Error('Stripe manager is not initialized')
-        }
-        return await this.stripeManager.getCustomerWithDefaultSource(customerId)
+        // VibeForge Embedded: Subscription removed - Return null (no customer needed)
+        return null
     }
 
     public async getAdditionalSeatsProration(subscriptionId: string, newQuantity: number) {
-        if (!subscriptionId) return {}
-        if (!this.stripeManager) {
-            throw new Error('Stripe manager is not initialized')
+        // VibeForge Embedded: Subscription removed - Return free proration
+        return {
+            basePlanAmount: 0,
+            additionalSeatsProratedAmount: 0,
+            seatPerUnitPrice: 0,
+            prorationAmount: 0,
+            creditBalance: 0,
+            nextInvoiceTotal: 0,
+            currency: 'USD',
+            prorationDate: Math.floor(Date.now() / 1000),
+            currentPeriodStart: Math.floor(Date.now() / 1000),
+            currentPeriodEnd: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60)
         }
-        return await this.stripeManager.getAdditionalSeatsProration(subscriptionId, newQuantity)
     }
 
     public async updateAdditionalSeats(subscriptionId: string, quantity: number, prorationDate: number) {
-        if (!subscriptionId) return {}
-
-        if (!this.stripeManager) {
-            throw new Error('Stripe manager is not initialized')
+        // VibeForge Embedded: Subscription removed - Return mock success (no seats limit)
+        return {
+            success: true,
+            subscription: null,
+            invoice: null
         }
-        const { success, subscription, invoice } = await this.stripeManager.updateAdditionalSeats(subscriptionId, quantity, prorationDate)
-
-        // Fetch product details to get quotas
-        const items = subscription.items.data
-        if (items.length === 0) {
-            throw new Error('No subscription items found')
-        }
-
-        const productId = items[0].price.product as string
-        const product = await this.stripeManager.getStripe().products.retrieve(productId)
-        const productMetadata = product.metadata
-
-        // Extract quotas from metadata
-        const quotas: Record<string, number> = {}
-        for (const key in productMetadata) {
-            if (key.startsWith('quota:')) {
-                quotas[key] = parseInt(productMetadata[key])
-            }
-        }
-        quotas[LICENSE_QUOTAS.ADDITIONAL_SEATS_LIMIT] = quantity
-
-        // Get features from Stripe
-        const features = await this.getFeaturesByPlan(subscription.id, true)
-
-        // Update the cache with new subscription data including quotas
-        const cacheManager = await UsageCacheManager.getInstance()
-        await cacheManager.updateSubscriptionDataToCache(subscriptionId, {
-            features,
-            quotas,
-            subsriptionDetails: this.stripeManager.getSubscriptionObject(subscription)
-        })
-
-        return { success, subscription, invoice }
     }
 
     public async getPlanProration(subscriptionId: string, newPlanId: string) {
-        if (!subscriptionId || !newPlanId) return {}
-
-        if (!this.stripeManager) {
-            throw new Error('Stripe manager is not initialized')
+        // VibeForge Embedded: Subscription removed - Return free proration
+        return {
+            newPlanAmount: 0,
+            prorationAmount: 0,
+            creditBalance: 0,
+            currency: 'USD',
+            prorationDate: Math.floor(Date.now() / 1000),
+            currentPeriodStart: Math.floor(Date.now() / 1000),
+            currentPeriodEnd: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+            eligibleForFirstMonthFree: false
         }
-        return await this.stripeManager.getPlanProration(subscriptionId, newPlanId)
     }
 
     public async updateSubscriptionPlan(req: Request, subscriptionId: string, newPlanId: string, prorationDate: number) {
-        if (!subscriptionId || !newPlanId) return {}
-
-        if (!this.stripeManager) {
-            throw new Error('Stripe manager is not initialized')
-        }
+        // VibeForge Embedded: Subscription removed - Return mock success (no plan changes needed)
         if (!req.user) {
             throw new InternalFlowiseError(StatusCodes.UNAUTHORIZED, GeneralErrorMessage.UNAUTHORIZED)
         }
-        const { success, subscription } = await this.stripeManager.updateSubscriptionPlan(subscriptionId, newPlanId, prorationDate)
-        if (success) {
-            // Fetch product details to get quotas
-            const product = await this.stripeManager.getStripe().products.retrieve(newPlanId)
-            const productMetadata = product.metadata
 
-            // Extract quotas from metadata
-            const quotas: Record<string, number> = {}
-            for (const key in productMetadata) {
-                if (key.startsWith('quota:')) {
-                    quotas[key] = parseInt(productMetadata[key])
-                }
-            }
+        // Get all features enabled
+        const features = await this.getFeaturesByPlan('', false)
 
-            const additionalSeatsItem = subscription.items.data.find(
-                (item) => (item.price.product as string) === process.env.ADDITIONAL_SEAT_ID
-            )
-            quotas[LICENSE_QUOTAS.ADDITIONAL_SEATS_LIMIT] = additionalSeatsItem?.quantity || 0
-
-            // Get features from Stripe
-            const features = await this.getFeaturesByPlan(subscription.id, true)
-
-            // Update the cache with new subscription data including quotas
-            const cacheManager = await UsageCacheManager.getInstance()
-
-            const updateCacheData: Record<string, any> = {
-                features,
-                quotas,
-                subsriptionDetails: this.stripeManager.getSubscriptionObject(subscription)
-            }
-
-            if (
-                newPlanId === process.env.CLOUD_FREE_ID ||
-                newPlanId === process.env.CLOUD_STARTER_ID ||
-                newPlanId === process.env.CLOUD_PRO_ID
-            ) {
-                updateCacheData.productId = newPlanId
-            }
-
-            await cacheManager.updateSubscriptionDataToCache(subscriptionId, updateCacheData)
-
-            const loggedInUser: LoggedInUser = {
-                ...req.user,
-                activeOrganizationSubscriptionId: subscription.id,
-                features
-            }
-
-            if (
-                newPlanId === process.env.CLOUD_FREE_ID ||
-                newPlanId === process.env.CLOUD_STARTER_ID ||
-                newPlanId === process.env.CLOUD_PRO_ID
-            ) {
-                loggedInUser.activeOrganizationProductId = newPlanId
-            }
-
-            req.user = {
-                ...req.user,
-                ...loggedInUser
-            }
-
-            // Update passport session
-            // @ts-ignore
-            req.session.passport.user = {
-                ...req.user,
-                ...loggedInUser
-            }
-
-            req.session.save((err) => {
-                if (err) throw new InternalFlowiseError(StatusCodes.BAD_REQUEST, GeneralErrorMessage.UNHANDLED_EDGE_CASE)
-            })
-
-            return {
-                status: 'success',
-                user: loggedInUser
-            }
+        const loggedInUser: LoggedInUser = {
+            ...req.user,
+            features
         }
+
+        req.user = {
+            ...req.user,
+            ...loggedInUser
+        }
+
         return {
-            status: 'error',
-            message: 'Payment or subscription update not completed'
+            status: 'success',
+            user: loggedInUser
         }
     }
 
     public async createStripeUserAndSubscribe({ email, userPlan, referral }: { email: string; userPlan: UserPlan; referral?: string }) {
-        if (!this.stripeManager) {
-            throw new Error('Stripe manager is not initialized')
-        }
-
-        try {
-            // Create a customer in Stripe
-            let customer: Stripe.Response<Stripe.Customer>
-            if (referral) {
-                customer = await this.stripeManager.getStripe().customers.create({
-                    email: email,
-                    metadata: {
-                        referral
-                    }
-                })
-            } else {
-                customer = await this.stripeManager.getStripe().customers.create({
-                    email: email
-                })
-            }
-
-            let productId = ''
-            switch (userPlan) {
-                case UserPlan.STARTER:
-                    productId = process.env.CLOUD_STARTER_ID as string
-                    break
-                case UserPlan.PRO:
-                    productId = process.env.CLOUD_PRO_ID as string
-                    break
-                case UserPlan.FREE:
-                    productId = process.env.CLOUD_FREE_ID as string
-                    break
-            }
-
-            // Get the default price ID for the product
-            const prices = await this.stripeManager.getStripe().prices.list({
-                product: productId,
-                active: true,
-                limit: 1
-            })
-
-            if (!prices.data.length) {
-                throw new Error('No active price found for the product')
-            }
-
-            // Create the subscription
-            const subscription = await this.stripeManager.getStripe().subscriptions.create({
-                customer: customer.id,
-                items: [{ price: prices.data[0].id }]
-            })
-
-            return {
-                customerId: customer.id,
-                subscriptionId: subscription.id
-            }
-        } catch (error) {
-            console.error('Error creating Stripe user and subscription:', error)
-            throw error
+        // VibeForge Embedded: Subscription removed - Return empty values (no Stripe customer/subscription needed)
+        return {
+            customerId: '',
+            subscriptionId: ''
         }
     }
 }
